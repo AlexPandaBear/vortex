@@ -30,6 +30,7 @@ nb_threads = 4
 useEuler = True
 useRK4 = True
 useSV = True
+useSVI = False
 
 trLen = 50 #Trace length in animation
 
@@ -39,6 +40,8 @@ trLen = 50 #Trace length in animation
 nb_vtx = len(X)
 H_tot = []
 deltaAlpha = 1/trLen
+
+print("Starting simulation(s)...")
 
 if useEuler:
     sm_euler = vtx.SM()
@@ -73,36 +76,50 @@ if useSV:
     H_sv = sm_sv.computeHamiltonianEvolution(nb_threads)
     H_tot += H_sv
 
-if useEuler or useRK4 or useSV:
+if useSVI:
+    sm_svi = vtx.SM()
+    for i in range(nb_vtx):
+        sm_svi.addVtx(X[i], Y[i], C[i], R[i])
+    sm_svi.buildTimeSample(t0, tEnd, nb_steps)
+    sm_svi.chooseNumericalMethod("sv")
+    sm_svi.sim(nb_threads)
+    T = sm_svi.getTimeList()
+    H_svi = sm_svi.computeHamiltonianEvolution(nb_threads)
+    H_tot += H_svi
+
+print("Simulation(s) teminated")
+
+if useEuler or useRK4 or useSV or useVI:
     max = max(H_tot)
     min = min(H_tot)
 
+print("Plotting...")
 
-plt.figure()
+fig, (ax1, ax2) = plt.subplots(1,2)
+#plt.figure()
 
 for t in range(nb_steps+1):
-    plt.subplot(1,2,1)
-    plt.cla()
+    ax1.cla()
 
     if useEuler:
-        plt.plot(T, H_euler, label="euler", color='b')
+        ax1.plot(T, H_euler, label="euler", color='b')
 
     if useRK4:
-        plt.plot(T, H_rk4, label="rk4", color='r')
+        ax1.plot(T, H_rk4, label="rk4", color='r')
 
     if useSV:
-        plt.plot(T, H_sv, label="sv", color='g')
+        ax1.plot(T, H_sv, label="sv", color='g')
 
-    if useEuler or useRK4 or useSV:
-        plt.plot([T[t],T[t]], [min,max], color='k', linestyle='--')
+    if useSVI:
+        ax1.plot(T, H_svi, label="svi", color='c')
 
-    plt.xlabel("time (sec)")
-    plt.ylabel("Hamiltonian")
-    plt.title("Evolution of the Hamiltonian over the simulation")
-    plt.legend()
-    plt.show(block=False)
+    if useEuler or useRK4 or useSV or useSVI:
+        ax1.plot([T[t],T[t]], [min,max], color='k', linestyle='--')
 
-    plt.subplot(1,2,2)
+    ax1.set_xlabel("time (sec)")
+    ax1.set_ylabel("Hamiltonian")
+    ax1.set_title("Evolution of the Hamiltonian over the simulation")
+    ax1.legend()
     plt.show(block=False)
 
     if useEuler:
@@ -117,40 +134,53 @@ for t in range(nb_steps+1):
         X_sv = [sm_sv.getVtxXs(i) for i in range(nb_vtx)]
         Y_sv = [sm_sv.getVtxYs(i) for i in range(nb_vtx)]
 
+    if useSVI:
+        X_svi = [sm_svi.getVtxXs(i) for i in range(nb_vtx)]
+        Y_svi = [sm_svi.getVtxYs(i) for i in range(nb_vtx)]
+
     b = t+1
     a = b - trLen
 
     if a < 0:
         a = 0
 
-    plt.cla()
-    plt.xlim([-2,2])
-    plt.ylim([-2,2])
-    plt.grid()
+    ax2.cla()
+    ax2.set_xlim([-2,2])
+    ax2.set_ylim([-2,2])
+    ax2.grid()
 
     for i in range(nb_vtx):
         if useEuler:
-            plt.scatter(X_euler[i][t], Y_euler[i][t], color='b')
+            ax2.scatter(X_euler[i][t], Y_euler[i][t], color='b')
             X_plot = X_euler[i][a:b]
             Y_plot = Y_euler[i][a:b]
             for j in range(b-a):
-                plt.plot(X_plot[j:j+2], Y_plot[j:j+2], color='b', alpha=(j+1)*deltaAlpha)
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='b', alpha=(j+1)*deltaAlpha)
 
         if useRK4:
-            plt.scatter(X_rk4[i][t], Y_rk4[i][t], color='r')
+            ax2.scatter(X_rk4[i][t], Y_rk4[i][t], color='r')
             X_plot = X_rk4[i][a:b]
             Y_plot = Y_rk4[i][a:b]
             for j in range(b-a):
-                plt.plot(X_plot[j:j+2], Y_plot[j:j+2], color='r', alpha=(j+1)*deltaAlpha)
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='r', alpha=(j+1)*deltaAlpha)
 
         if useSV:
-            plt.scatter(X_sv[i][t], Y_sv[i][t], color='g')
+            ax2.scatter(X_sv[i][t], Y_sv[i][t], color='g')
             X_plot = X_sv[i][a:b]
             Y_plot = Y_sv[i][a:b]
             for j in range(b-a):
-                plt.plot(X_plot[j:j+2], Y_plot[j:j+2], color='g', alpha=(j+1)*deltaAlpha)
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='g', alpha=(j+1)*deltaAlpha)
+
+        if useSVI:
+            ax2.scatter(X_svi[i][t], Y_svi[i][t], color='c')
+            X_plot = X_svi[i][a:b]
+            Y_plot = Y_svi[i][a:b]
+            for j in range(b-a):
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='c', alpha=(j+1)*deltaAlpha)
 
     plt.draw()
     plt.pause(0.5)
 
 plt.show()
+
+print("--------------------------------------------------------END-")

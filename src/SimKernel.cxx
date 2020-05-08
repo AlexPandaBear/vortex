@@ -390,6 +390,101 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 	integrate(dm, step);
 }
 
+void SimKernel::computeSVIStep(DataManager &dm, size_t step)
+{
+	double x, y, u, v;
+	Vortex vtx(0,0,0,0);
+
+	double dt(v_time[step+1] - v_time[step]);
+
+	std::vector<Vortex> workingCopy;
+	for (auto v : v_vtx) {workingCopy.push_back(v);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				v += vtx.computeYInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(0., 0.5*dt*dm.getVAt(step, i));}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				u += vtx.computeXInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(dt*dm.getUAt(step, i), 0.);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		v = dm.getVAt(step, i);
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				v += vtx.computeYInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeVAt(step, i, v/2.);
+	}
+
+	integrate(dm, step);
+}
+
 void SimKernel::sim(DataManager &dm, size_t nb_threads)
 {
 	m_nb_vtx = v_vtx.size();
@@ -419,7 +514,7 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
 			computeEEStep_multithread(dm, t, nb_threads);
 		}
 	}
@@ -428,7 +523,7 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
 			computeRK4Step_multithread(dm, t, nb_threads);
 		}
 	}
@@ -437,8 +532,17 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
 			computeSVStep(dm, t);
+		}
+	}
+
+	else if (m_method == "svi")
+	{
+		for (size_t t = 0; t < m_nb_steps; t++)
+		{
+			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			computeSVIStep(dm, t);
 		}
 	}
 

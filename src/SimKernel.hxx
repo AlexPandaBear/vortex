@@ -32,6 +32,7 @@ private:
 	void computeRK4Substep(std::vector<Vortex> &workingCopy, std::vector<double> &k_u, std::vector<double> &k_v, size_t step, size_t firstVtx, size_t lastVtx, size_t substep) const;
 	void computeRK4Step_multithread(DataManager &dm, size_t step, size_t nb_threads);
 	void computeSVStep(DataManager &dm, size_t step);
+	void computeSVIStep(DataManager &dm, size_t step);
 
 public:
 	SimKernel(bool x_periodic, bool y_periodic, double x_period, double y_period, std::string method);
