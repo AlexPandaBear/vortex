@@ -12,7 +12,7 @@ Matplotlib
 ## How to install
 ```console
 user@linux:~/path/to/code$ mkdir build  
-user@linux:~/path/to/code/build$ cd build  
+user@linux:~/path/to/code$ cd build  
 user@linux:~/path/to/code/build$ cmake ../src -DCMAKE_INSTALL_PREFIX=$PWD/install    
 user@linux:~/path/to/code/build$ make install  
 ```
