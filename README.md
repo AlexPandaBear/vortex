@@ -11,16 +11,16 @@ Matplotlib
 
 ## How to install
 ```console
-user@linux:~$ mkdir build  
-user@linux:~$ cd build  
-user@linux:~$ cmake ../src -DCMAKE_INSTALL_PREFIX=$PWD/install  
-user@linux:~$ make  
-user@linux:~$ make install  
+user@linux:~/path/to/code$ mkdir build  
+user@linux:~/path/to/code/build$ cd build  
+user@linux:~/path/to/code/build$ cmake ../src -DCMAKE_INSTALL_PREFIX=$PWD/install  
+user@linux:~/path/to/code/build$ make  
+user@linux:~/path/to/code/build$ make install  
 ```
 
 ## How to use
 ```console
-user@linux:~$ cd python
-user@linux:~$ export PYTHONPATH=$PWD/../build/install/lib/python
-user@linux:~$ python -i <script>
+user@linux:~/path/to/code$ cd python
+user@linux:~/path/to/code/python$ export PYTHONPATH=$PWD/../build/install/lib/python
+user@linux:~/path/to/code/python$ python -i <script>
 ```
