@@ -2,9 +2,9 @@
 Alexandre DUTKA - ISAE-SUPAERO - 05/2020
 
 ## Requirements
-G++  
-Python3+  
 CMake  
+C++ compiler  
+Python 3+  
 PyBind11  
 NumPy  
 Matplotlib  
