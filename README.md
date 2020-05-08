@@ -19,4 +19,9 @@ make install
 ## How to use
 cd python  
 export PYTHONPATH=$PWD/../build/install/lib/python  
-python -i <script>
+python -i <script>  
+
+```console
+foo@bar:~$ whoami
+foo
+```
