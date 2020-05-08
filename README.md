@@ -10,18 +10,17 @@ NumPy
 Matplotlib  
 
 ## How to install
-mkdir build  
-cd build  
-cmake ../src -DCMAKE_INSTALL_PREFIX=$PWD/install  
-make  
-make install  
+```console
+user@linux:~$ mkdir build  
+user@linux:~$ cd build  
+user@linux:~$ cmake ../src -DCMAKE_INSTALL_PREFIX=$PWD/install  
+user@linux:~$ make  
+user@linux:~$ make install  
+```
 
 ## How to use
-cd python  
-export PYTHONPATH=$PWD/../build/install/lib/python  
-python -i <script>  
-
 ```console
-foo@bar:~$ whoami
-foo
+user@linux:~$ cd python
+user@linux:~$ export PYTHONPATH=$PWD/../build/install/lib/python
+user@linux:~$ python -i <script>
 ```
