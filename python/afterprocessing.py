@@ -22,37 +22,37 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (useful only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
-dataFile = "sv_test"
+dataFile = "test3"
 
-plotVtxAnimation = True
+plotVtxAnimation = False
 vtxMvt_reframe = True
 traceLength = 5
 
 plotVtxConfig = False
 vtxConfig_reframe = True
-steps_vtxConfig = [0]
+steps_vtxConfig = [0, 100, 200, 500, 1000]
 
-plotCompositionField = True
-steps_compositionField = [0, 25, 50, 75, 100]
-compositionRadius = 0.5
+plotCompositionField = False
+steps_compositionField = [i for i in range(1001) if i%100==0]
+compositionRadius = "auto"
 plotCompoAnimation = False
 
 plotVelocityField = True
-steps_velocityField = [0, 25, 50, 75, 100]
+steps_velocityField = [0, 50, 100, 150, 200]
 
 plotVorticityField = True
-steps_vorticityField = [0, 25, 50, 75, 100]
-derivationDistance = 0.01
+steps_vorticityField = [0, 50, 100, 150, 200]
+derivationDistance = "auto"
 
-plotPressureCoefField = True
-steps_pressureCoefField = [0, 25, 50, 75, 100]
+plotPressureCoefField = False
+steps_pressureCoefField = [0, 100, 200, 500, 1000]
 
-plotStreamlines = True
-steps_streamlines = [0, 25, 50, 75, 100]
+plotStreamlines = False
+steps_streamlines = [0, 100, 200, 500, 1000]
 integrationStep = 0.1
 nb_streamlines = 20
 
-plotHamiltonianEvolution = True
+plotHamiltonianEvolution = False
 
 numberOfThreads = 4
 
@@ -87,7 +87,11 @@ def loadWorkspace(file):
     global temporalIntegrationMethod
     temporalIntegrationMethod = f.readline().rstrip()
     global periodicity
-    periodicity = bool(f.readline())
+    periodicity = f.readline().rstrip()
+    if periodicity == "True":
+        periodicity = True
+    else:
+        periodicity = False
     global dx
     dx = width/(nx-1)
     global dy
@@ -160,8 +164,10 @@ def vtxConfig(s, step):
     Y = s.getYsAt(step)
     C = s.getCirculationsAt(step)
 
+    nb_vtx = len(X)
+
     if vtxConfig_reframe:
-    	for i in range(nx*ny):
+    	for i in range(nb_vtx):
     		if X[i] > width:
     			X[i] -= width
     		elif X[i] < 0.:
@@ -172,7 +178,7 @@ def vtxConfig(s, step):
     plt.figure()
     plt.title("Vortex configuration at step {} (ie t = {} sec)".format(step, T[step]))
 
-    for i in range(nx*ny):
+    for i in range(nb_vtx):
     	color = 'dodgerblue'
     	if C[i] < 0.:
     		color = 'hotpink'
@@ -187,25 +193,18 @@ def vtxConfig(s, step):
 def fluidComposition(s, nbx, nby, step, radius):
     plt.figure()
     plt.title("Composition field at step {} (ie t = {} sec)".format(step, T[step]))
+
     x = np.linspace(0, width, nbx)
     y = np.linspace(-0.5*height, 0.5*height, nby)
-
     X,Y = np.meshgrid(x,y)
-
     C = np.zeros((nby,nbx))
 
     for i in range(nbx):
     	for j in range(nby):
-            C[j,i] = s.computeCompositionAt(x[i], y[j], step, radius)
+            compo = s.computeCompositionAt(x[i], y[j], step, radius)
+            C[j,i] = compo[0] - compo[1]
             if math.isnan(C[j,i]):
-                C[j,i] = s.computeCompositionAt(x[i], y[j], step, 2*radius)
-            if math.isnan(C[j,i]):
-                C[j,i] = s.computeCompositionAt(x[i], y[j], step, 3*radius)
-            if math.isnan(C[j,i]):
-            	if y[j] > 0.:
-            		C[j,i] = 1.5
-            	else:
-            		C[j,i] = -1.5
+            	C[j,i] = 0.
 
     plt.contourf(X, Y, C, alpha=.75, cmap='seismic')
     c = plt.contour(X, Y, C, colors='black')
@@ -223,25 +222,21 @@ def fluidCompoAnim(s, nbx, nby, radius):
     plt.figure()
     plt.show(block=False)
 
-    for step in range(nb_steps):
+    for step in range(nb_steps+1):
         plt.cla()
 
         for i in range(nbx):
             for j in range(nby):
-                C[j,i] = s.computeCompositionAt(x[i], y[j], step, radius)
+                compo = s.computeCompositionAt(x[i], y[j], step, radius)
+                C[j,i] = compo[0] - compo[1]
                 if math.isnan(C[j,i]):
-                    C[j,i] = s.computeCompositionAt(x[i], y[j], step, 2*radius)
-                if math.isnan(C[j,i]):
-                    C[j,i] = s.computeCompositionAt(x[i], y[j], step, 3*radius)
-                if math.isnan(C[j,i]):
-                	if y[j] > 0.:
-                		C[j,i] = 1.5
-                	else:
-                		C[j,i] = -1.5
+                	C[j,i] = 0.
 
         plt.contourf(X, Y, C, alpha=.75, cmap='seismic')
         c = plt.contour(X, Y, C, colors='black')
         plt.clabel(c)
+
+        plt.annotate("Step {}/{}".format(step, nb_steps), xy=(0.02*width,0.45*height))
 
         plt.draw()
         plt.pause(1e-17)
@@ -287,6 +282,9 @@ def velocityField(s, nbx, nby, step):
 
 #Plots the vorticity field's maggnitude at step step computed in sim. manager s, using nbx points of calculus horizontaly, and nby verticaly. Numerical derivation is done with staptial step h
 def vorticityContours(s, nbx, nby, step, h):
+    if h == "auto":
+        h = max(dx, dy)
+
     plt.figure()
     plt.title("Vorticity field at step {} (ie t = {} sec)".format(step, T[step]))
     x = np.linspace(0, width, nbx)
@@ -418,6 +416,9 @@ if plotVtxConfig :
 	for step in steps_vtxConfig:
 		print("Plotting vortices configuration at step {} (ie t = {} sec)".format(step, T[step]))
 		vtxConfig(sm, step)
+
+if compositionRadius == "auto":
+    compositionRadius = 3*max(dx, dy)
 
 if plotCompositionField:
 	for step in steps_compositionField:

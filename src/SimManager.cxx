@@ -13,9 +13,9 @@ void SimManager::setName(std::string new_name)
 	name = new_name;
 }
 
-void SimManager::addVtx(double x, double y, double circulation, double radius)
+void SimManager::addVtx(double x, double y, double circulation, double radius, size_t fluidId)
 {
-	Vortex vtx(x, y, circulation, radius);
+	Vortex vtx(x, y, circulation, radius, fluidId);
 	kernel.addVortex(vtx);
 }
 
@@ -192,7 +192,7 @@ std::vector<double> SimManager::getVtxCirculations(size_t vtx) const
 	return res;
 }
 
-double SimManager::computeCompositionAt(double x, double y, size_t step, double radius) const
+std::map<size_t, double> SimManager::computeCompositionAt(double x, double y, size_t step, double radius) const
 {
 	return DataAnalyst::computeCompositionAt(data, x, y, step, radius);
 }

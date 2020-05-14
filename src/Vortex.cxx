@@ -1,10 +1,11 @@
 #include "Vortex.hxx"
 
-Vortex::Vortex(double x, double y, double circulation, double regRadius) :
+Vortex::Vortex(double x, double y, double circulation, double regRadius, size_t fluid_id) :
 	m_x(x),
 	m_y(y),
 	m_circ(circulation),
-	m_rad(regRadius) {}
+	m_rad(regRadius),
+	m_fluid_id(fluid_id) {}
 
 Vortex::~Vortex() {}
 
@@ -28,6 +29,11 @@ double Vortex::getRegRadius() const
 	return m_rad;
 }
 
+size_t Vortex::getFluidId() const
+{
+	return m_fluid_id;
+}
+
 
 void Vortex::setX(double newX)
 {
@@ -49,10 +55,16 @@ void Vortex::setRegRadius(double newRegRadius)
 	m_rad = newRegRadius;
 }
 
+void Vortex::setFluidId(size_t newId)
+{
+	m_fluid_id = newId;
+}
+
+
 std::string Vortex::toString() const
 {
 	std::ostringstream ss;
-	ss << "Vtx: x = " << m_x << " ; y = " << m_y << " ; circulation = " << m_circ << " ; regularization radius = " << m_rad;
+	ss << "Vtx: fluid = " << m_fluid_id << " ; x = " << m_x << " ; y = " << m_y << " ; circulation = " << m_circ << " ; regularization radius = " << m_rad;
 	return  ss.str();
 }
 

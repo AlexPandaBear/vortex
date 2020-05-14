@@ -1,3 +1,4 @@
 /build
 *.simdata
 *.wsdata
+/data

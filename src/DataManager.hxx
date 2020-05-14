@@ -11,6 +11,7 @@ private:
 	size_t m_nb_vtx;
 
 	std::unique_ptr<double[]> ptr_time;
+	std::unique_ptr<size_t[]> ptr_fluid_id;
 	std::unique_ptr<double[]> ptr_x;
 	std::unique_ptr<double[]> ptr_y;
 	std::unique_ptr<double[]> ptr_u;
@@ -26,6 +27,7 @@ public:
 	size_t getNbSteps() const;
 	
 	double getTimeAt(size_t timeStep) const;
+	size_t getFluidId(size_t vortexID) const;
 	double getXAt(size_t timeStep, size_t vortexID) const;
 	double getYAt(size_t timeStep, size_t vortexID) const;
 	double getUAt(size_t timeStep, size_t vortexID) const;
@@ -34,6 +36,7 @@ public:
 	double getRegRadiusAt(size_t timeStep, size_t vortexID) const;
 
 	void storeTimeAt(size_t timeStep, double time);
+	void storeFluidId(size_t vortexID, size_t fluidId);
 	void storeXAt(size_t timeStep, size_t vortexID, double x);
 	void storeYAt(size_t timeStep, size_t vortexID, double y);
 	void storeUAt(size_t timeStep, size_t vortexID, double u);

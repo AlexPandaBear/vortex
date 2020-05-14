@@ -17,7 +17,7 @@ public:
 	~SimManager();
 
 	void setName(std::string new_name);
-	void addVtx(double x, double y, double circulation, double radius);
+	void addVtx(double x, double y, double circulation, double radius, size_t fluidId);
 	void buildTimeSample(double t0, double tEnd, size_t nb_steps);
 	void setXPeriodicityTo(bool periodic, double period);
 	void setYPeriodicityTo(bool periodic, double period);
@@ -42,7 +42,7 @@ public:
 	std::vector<double> getVtxVs(size_t vtx) const;
 	std::vector<double> getVtxCirculations(size_t vtx) const;
 
-	double computeCompositionAt(double x, double y, size_t step, double radius) const;
+	std::map<size_t, double> computeCompositionAt(double x, double y, size_t step, double radius) const;
 	std::vector<double> computeVelocityAt(double x, double y, size_t step, bool x_periodic, double x_period) const;
 	double computeVorticityAt(double x, double y, size_t step, double h, bool x_periodic, double x_period) const;
 

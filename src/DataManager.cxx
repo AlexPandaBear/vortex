@@ -4,6 +4,7 @@ DataManager::DataManager(size_t nb_steps, size_t nb_vtx) :
 	m_nb_timeSamples(nb_steps+1),
 	m_nb_vtx(nb_vtx),
 	ptr_time(new double[m_nb_timeSamples]),
+	ptr_fluid_id(new size_t[m_nb_vtx]),
 	ptr_x(new double[m_nb_timeSamples*m_nb_vtx]),
 	ptr_y(new double[m_nb_timeSamples*m_nb_vtx]),
 	ptr_u(new double[m_nb_timeSamples*m_nb_vtx]),
@@ -26,6 +27,11 @@ size_t DataManager::getNbSteps() const
 double DataManager::getTimeAt(size_t timeStep) const
 {
 	return ptr_time[timeStep];
+}
+
+size_t DataManager::getFluidId(size_t vortexID) const
+{
+	return ptr_fluid_id[vortexID];
 }
 
 double DataManager::getXAt(size_t timeStep, size_t vortexID) const
@@ -61,6 +67,11 @@ double DataManager::getRegRadiusAt(size_t timeStep, size_t vortexID) const
 void DataManager::storeTimeAt(size_t timeStep, double time)
 {
 	ptr_time[timeStep] = time;
+}
+
+void DataManager::storeFluidId(size_t vortexID, size_t fluidId)
+{
+	ptr_fluid_id[vortexID] = fluidId;
 }
 
 void DataManager::storeXAt(size_t timeStep, size_t vortexID, double x)
@@ -109,6 +120,11 @@ void DataManager::saveState(std::string fileNameWithPath) const
 	for (size_t t = 0; t < m_nb_timeSamples; t++)
 	{
 		outfile << ptr_time[t] << "\n";
+	}
+
+	for (size_t v = 0; v < m_nb_vtx; v++)
+	{
+		outfile << ptr_fluid_id[v] << "\n";
 	}
 
 	size_t const size(m_nb_vtx*m_nb_timeSamples);
@@ -169,6 +185,12 @@ void DataManager::loadFile(std::string fileNameWithPath)
 		ptr_time[t] = atof(dataStr.c_str());
 	}
 
+	for (size_t v = 0; v < m_nb_vtx; v++)
+	{
+		getline(dataFile, dataStr);
+		ptr_fluid_id[v] = atoi(dataStr.c_str());
+	}
+
 	size_t const size(m_nb_vtx*m_nb_timeSamples);
 	double x, y;
 
@@ -210,6 +232,7 @@ void DataManager::reset(size_t nb_steps, size_t nb_vtx)
 	m_nb_timeSamples = nb_steps+1;
 	m_nb_vtx = nb_vtx;
 	ptr_time.reset(new double[m_nb_timeSamples]);
+	ptr_fluid_id.reset(new size_t[m_nb_vtx]);
 	ptr_x.reset(new double[m_nb_timeSamples*m_nb_vtx]);
 	ptr_y.reset(new double[m_nb_timeSamples*m_nb_vtx]);
 	ptr_u.reset(new double[m_nb_timeSamples*m_nb_vtx]);

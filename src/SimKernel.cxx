@@ -504,6 +504,11 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 
 	for (size_t i = 0; i < m_nb_vtx; i++)
 	{
+		dm.storeFluidId(i, v_vtx[i].getFluidId());
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
 		dm.storeXAt(0, i, v_vtx[i].getX());
 		dm.storeYAt(0, i, v_vtx[i].getY());
 		dm.storeCirculationAt(0, i, v_vtx[i].getCirculation());

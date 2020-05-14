@@ -65,58 +65,51 @@ std::vector<double> DataAnalyst::computeHamiltonianEvolution(DataManager const &
 	return v_H;
 }
 
-double DataAnalyst::computeCompositionAt(DataManager const &dm, double x, double y, size_t step, double radius)
+std::map<size_t, double> DataAnalyst::computeCompositionAt(DataManager const &dm, double x, double y, size_t step, double radius)
 {
-	size_t nb_steps = dm.getNbSteps();
 	size_t nb_vtx = dm.getNbVtx();
+	size_t fluid_id;
+	std::map<size_t, double> map_compo;
 
-	std::vector<double> v_coef;
+	for (size_t i = 0; i < nb_vtx; i++)
+	{
+		fluid_id = dm.getFluidId(i);
+		if (map_compo.find(fluid_id) == map_compo.end())
+		{
+			map_compo[fluid_id] = 0.;
+		}
+	}
 
 	double deltaX, deltaY;
-	double dist2, rad2(radius*radius);
+	double dist, dist2, rad2(radius*radius);
 
 	for (size_t i = 0; i < nb_vtx; i++)
 	{
 		deltaX = dm.getXAt(step, i) - x;
 		deltaY = dm.getYAt(step, i) - y;
 		dist2 = deltaX*deltaX + deltaY*deltaY;
+		
 		if (dist2 < rad2)
 		{
-			if (dm.getYAt(0, i) > 0.)
-			{
-				v_coef.push_back(1-(dist2/rad2));
-			}
-			else
-			{
-				v_coef.push_back(-1+(dist2/rad2));
-			}
+			dist = sqrt(dist2);
+			fluid_id = dm.getFluidId(i);
+			map_compo[fluid_id] += 1. - dist/radius;
 		}
 	}
 
-	double num(0.), den(0.);
+	double sum(0.);
+	for (std::map<size_t, double>::iterator it = map_compo.begin(); it != map_compo.end(); it++) {sum += it->second;}
+	for (std::map<size_t, double>::iterator it = map_compo.begin(); it != map_compo.end(); it++) {it->second /= sum;}
 
-	for (auto c : v_coef)
-	{
-		num += c;
-		if (c < 0)
-		{
-			den += -c;
-		}
-		else
-		{
-			den += c;
-		}
-	}
-
-	return num/den;
+	return map_compo;
 }
 
-std::vector<double> DataAnalyst::computeCompositionEvolutionAt(DataManager const &dm, double x, double y, double radius)
+std::vector<std::map<size_t, double>> DataAnalyst::computeCompositionEvolutionAt(DataManager const &dm, double x, double y, double radius)
 {
 	size_t nb_steps = dm.getNbSteps();
 	size_t nb_vtx = dm.getNbVtx();
 
-	std::vector<double> v_C;
+	std::vector<std::map<size_t, double>> v_C;
 	for (size_t t = 0; t < nb_steps+1; t++)
 	{
 		v_C.push_back(computeCompositionAt(dm, x, y, t, radius));

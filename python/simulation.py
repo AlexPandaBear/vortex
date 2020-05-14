@@ -1,7 +1,7 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
 print("----------------------   Simulation   ----------------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 04/2020   -------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -25,19 +25,19 @@ height = 10.
 U0 = 1. #initial velocity of the top layer (bottom one's is -U0)
 
 RSLT = 0.3 #relative shear layer thickness
-RIHPA = 0.2 #relative initial harmonic perturbation amplitude
+RIHPA = 0.3 #relative initial harmonic perturbation amplitude
 
 nx = 50 #number of columns for the vtx matrix
 ny = 50 #number of lines for the vtx matrix
 
 t0 = 0.
-tEnd = 100.
-nb_steps = 10000
+tEnd = 40.
+nb_steps = 200
 
 #Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4) and Stormer-Verlet (sv)
 temporalIntegrationMethod = "rk4"
 
-periodicity = False #computes mvt considering the periodicity of the flow (4 neighbour cells used)
+periodicity = True #computes mvt considering the periodicity of the flow (4 neighbour cells used)
 
 dx = width/(nx-1) #horizontal space between two vtx at t0
 dy = height/(ny-1) #vertical space between two vtx at t0
@@ -51,16 +51,16 @@ regRadius = max(dx, dy)
 
 print("Reading instructions")
 
-ignoreNullCricVtx = True
+ignoreNullCircVtx = True
 showRealVtxNumber = True
 
-plotInitialProfiles = False
+plotInitialProfiles = True
 
 showComputationTime = True
 
 saveSim = True
 dataFolder = "../data"
-saveFile = "rk4_10ka"
+saveFile = "test3"
 
 numberOfThreads = 4
 
@@ -142,11 +142,14 @@ for i in range(nx):
 		y = height * (0.5 - j/(ny-1))
 		circ = computeVtxCircAt(x, y, SLT)
 		yWithPert = y + RIHPA * np.sin(2*np.pi * x/width) * np.cos(np.pi * y/height)
-		if ignoreNullCricVtx:
+		fluid = 0
+		if y < 0.:
+			fluid = 1
+		if ignoreNullCircVtx:
 			if circ!=0.:
-				sm.addVtx(x, yWithPert, circ, regRadius)
+				sm.addVtx(x, yWithPert, circ, regRadius, fluid)
 		else:
-			sm.addVtx(x, yWithPert, circ, regRadius)
+			sm.addVtx(x, yWithPert, circ, regRadius, fluid)
 
 sm.buildTimeSample(t0, tEnd, nb_steps)
 sm.setXPeriodicityTo(periodicity, width)

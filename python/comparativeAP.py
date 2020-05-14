@@ -1,7 +1,7 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
 print("-------------   Comparative After-Processing   -------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 04/2020   -------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -22,15 +22,15 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used
 dataFolder = "../data"
-dataFiles = ["sv_1000a", "rk4_1000a", "ee_1000a", "sv_2000a", "rk4_2000a", "ee_2000a", "rk4_10ka", "ee_10ka", "sv_10ka"]
-simNames = ["sv_1000", "rk4_1000", "euler_1000", "sv_2000", "rk4_2000", "euler_2000", "rk4_10k", "euler_10k", "sv_10k"]
+dataFiles = ["rk4", "sv", "rk4_H0", "sv_H0"]
+simNames = ["rk4", "sv", "rk4_H0", "sv_H0"]
 
 compareParameters = True
 
 compareVtxConfigs = False
 colors_vtxConfigs = ["dodgerblue", "hotpink"]
 vtxConfigs_reframe = True
-steps_vtxConfigs = [0, 50, 100, 150, 200]
+steps_vtxConfigs = [i for i in range(1001) if i%50==0]
 
 compareHamiltonians = True
 
@@ -61,7 +61,11 @@ def loadWorkspace(file, WS):
     ws.append(float(f.readline()))
     ws.append(int(f.readline()))
     ws.append(f.readline().rstrip())
-    ws.append(bool(f.readline()))
+    periodicity = f.readline().rstrip()
+    if periodicity == "True":
+        ws.append(True)
+    else:
+        ws.append(False)
     ws.append(width/(nx-1))
     ws.append(height/(ny-1))
     ws.append(0.5*height*RSLT)

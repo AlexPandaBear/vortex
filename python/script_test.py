@@ -15,15 +15,15 @@ import matplotlib.pyplot as plt
 #%% PARAMETERS
 
 #Vortex definition
-X = [1., -1., 0., 0.]
-Y = [0., 0., 1., -1.]
-C = [1., 1., 1., 2.]
+X = [1., -1.]
+Y = [0., 0.]
+C = [1., 1.]
 R = [0.01 for x in X]
 
 #Time stepping parameters
 t0 = 0.
 tEnd = 100.
-nb_steps = 100
+nb_steps = 200
 nb_threads = 4
 
 #Methods to compare
@@ -46,7 +46,7 @@ print("Starting simulation(s)...")
 if useEuler:
     sm_euler = vtx.SM()
     for i in range(nb_vtx):
-        sm_euler.addVtx(X[i], Y[i], C[i], R[i])
+        sm_euler.addVtx(X[i], Y[i], C[i], R[i], 0)
     sm_euler.buildTimeSample(t0, tEnd, nb_steps)
     sm_euler.chooseNumericalMethod("euler")
     sm_euler.sim(nb_threads)
@@ -57,7 +57,7 @@ if useEuler:
 if useRK4:
     sm_rk4 = vtx.SM()
     for i in range(nb_vtx):
-        sm_rk4.addVtx(X[i], Y[i], C[i], R[i])
+        sm_rk4.addVtx(X[i], Y[i], C[i], R[i], 0)
     sm_rk4.buildTimeSample(t0, tEnd, nb_steps)
     sm_rk4.chooseNumericalMethod("rk4")
     sm_rk4.sim(nb_threads)
@@ -68,7 +68,7 @@ if useRK4:
 if useSV:
     sm_sv = vtx.SM()
     for i in range(nb_vtx):
-        sm_sv.addVtx(X[i], Y[i], C[i], R[i])
+        sm_sv.addVtx(X[i], Y[i], C[i], R[i], 0)
     sm_sv.buildTimeSample(t0, tEnd, nb_steps)
     sm_sv.chooseNumericalMethod("sv")
     sm_sv.sim(nb_threads)
@@ -148,6 +148,8 @@ for t in range(nb_steps+1):
     ax2.set_xlim([-2,2])
     ax2.set_ylim([-2,2])
     ax2.grid()
+    ax2.set_xlabel("x")
+    ax2.set_ylabel("y")
 
     for i in range(nb_vtx):
         if useEuler:

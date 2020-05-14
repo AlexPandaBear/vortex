@@ -23,7 +23,8 @@ PYBIND11_MODULE(_vortex, m)
     		py::arg("x"),
     		py::arg("y"),
     		py::arg("circulation"),
-    		py::arg("radius"))
+    		py::arg("radius"),
+            py::arg("fluid_id"))
     	.def("buildTimeSample", &SimManager::buildTimeSample,
     		py::arg("t0"),
     		py::arg("tEnd"),
