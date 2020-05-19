@@ -22,7 +22,7 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (useful only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
-dataFile = "test3"
+dataFile = "test"
 
 plotVtxAnimation = False
 vtxMvt_reframe = True
@@ -30,7 +30,7 @@ traceLength = 5
 
 plotVtxConfig = False
 vtxConfig_reframe = True
-steps_vtxConfig = [0, 100, 200, 500, 1000]
+steps_vtxConfig = [i for i in range(1001) if i%100==0]
 
 plotCompositionField = False
 steps_compositionField = [i for i in range(1001) if i%100==0]
@@ -38,10 +38,11 @@ compositionRadius = "auto"
 plotCompoAnimation = False
 
 plotVelocityField = True
-steps_velocityField = [0, 50, 100, 150, 200]
+steps_velocityField = [i for i in range(1001) if i%100==0]
+showVelocityVectors = False
 
-plotVorticityField = True
-steps_vorticityField = [0, 50, 100, 150, 200]
+plotVorticityField = False
+steps_vorticityField = [i for i in range(1001) if i%100==0]
 derivationDistance = "auto"
 
 plotPressureCoefField = False
@@ -180,12 +181,13 @@ def vtxConfig(s, step):
 
     for i in range(nb_vtx):
     	color = 'dodgerblue'
-    	if C[i] < 0.:
+    	if C[i] > 0.:
     		color = 'hotpink'
     	plt.scatter(X[i], Y[i], 100*abs(C[i])/circMax, c=color)
 
     plt.xlabel("x (m)")
     plt.ylabel("y (m)")
+    plt.ylim([-0.5*height, 0.5*height])
 
     plt.show()
 
@@ -268,11 +270,12 @@ def velocityField(s, nbx, nby, step):
 
     h = min(width/(nbx-1), height/(nby-1))
 
-    for i in range(nbx):
-    	for j in range(nby):
-    		mag_star = M[j,i]/U0
-    		arg = A[j,i]
-    		plt.annotate('', xy=(x[i]+0.8*h*mag_star*np.cos(arg),y[j]+0.8*h*mag_star*np.sin(arg)), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
+    if showVelocityVectors:
+        for i in range(nbx):
+        	for j in range(nby):
+        		mag_star = M[j,i]/U0
+        		arg = A[j,i]
+        		plt.annotate('', xy=(x[i]+0.8*h*mag_star*np.cos(arg),y[j]+0.8*h*mag_star*np.sin(arg)), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
 
     plt.contourf(X, Y, M, alpha=.75, cmap='jet')
     c = plt.contour(X, Y, M, colors='black')

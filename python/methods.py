@@ -22,17 +22,19 @@ R = [0.01 for x in X]
 
 #Time stepping parameters
 t0 = 0.
-tEnd = 100.
-nb_steps = 200
+tEnd = 10000.
+nb_steps = 10000
 nb_threads = 4
 
 #Methods to compare
 useEuler = True
 useRK4 = True
+useEulerA = True
+useEulerB = False
 useSV = True
-useSVI = False
+useSVI = True
 
-trLen = 50 #Trace length in animation
+trLen = 20 #Trace length in animation
 
 
 #%% SCRIPT
@@ -65,6 +67,28 @@ if useRK4:
     H_rk4 = sm_rk4.computeHamiltonianEvolution(nb_threads)
     H_tot += H_rk4
 
+if useEulerA:
+    sm_eulerA = vtx.SM()
+    for i in range(nb_vtx):
+        sm_eulerA.addVtx(X[i], Y[i], C[i], R[i], 0)
+    sm_eulerA.buildTimeSample(t0, tEnd, nb_steps)
+    sm_eulerA.chooseNumericalMethod("eulerA")
+    sm_eulerA.sim(nb_threads)
+    T = sm_eulerA.getTimeList()
+    H_eulerA = sm_eulerA.computeHamiltonianEvolution(nb_threads)
+    H_tot += H_eulerA
+
+if useEulerB:
+    sm_eulerB = vtx.SM()
+    for i in range(nb_vtx):
+        sm_eulerB.addVtx(X[i], Y[i], C[i], R[i], 0)
+    sm_eulerB.buildTimeSample(t0, tEnd, nb_steps)
+    sm_eulerB.chooseNumericalMethod("eulerB")
+    sm_eulerB.sim(nb_threads)
+    T = sm_eulerB.getTimeList()
+    H_eulerB = sm_eulerB.computeHamiltonianEvolution(nb_threads)
+    H_tot += H_eulerB
+
 if useSV:
     sm_sv = vtx.SM()
     for i in range(nb_vtx):
@@ -79,7 +103,7 @@ if useSV:
 if useSVI:
     sm_svi = vtx.SM()
     for i in range(nb_vtx):
-        sm_svi.addVtx(X[i], Y[i], C[i], R[i])
+        sm_svi.addVtx(X[i], Y[i], C[i], R[i], 0)
     sm_svi.buildTimeSample(t0, tEnd, nb_steps)
     sm_svi.chooseNumericalMethod("sv")
     sm_svi.sim(nb_threads)
@@ -89,14 +113,13 @@ if useSVI:
 
 print("Simulation(s) teminated")
 
-if useEuler or useRK4 or useSV or useVI:
+if useEuler or useRK4 or useEulerA or useEulerB or useSV or useVI:
     max = max(H_tot)
     min = min(H_tot)
 
 print("Plotting...")
 
 fig, (ax1, ax2) = plt.subplots(1,2)
-#plt.figure()
 
 for t in range(nb_steps+1):
     ax1.cla()
@@ -106,6 +129,12 @@ for t in range(nb_steps+1):
 
     if useRK4:
         ax1.plot(T, H_rk4, label="rk4", color='r')
+
+    if useEulerA:
+        ax1.plot(T, H_eulerA, label="eulerA", color='orange')
+
+    if useEulerB:
+        ax1.plot(T, H_eulerB, label="eulerB", color='violet')
 
     if useSV:
         ax1.plot(T, H_sv, label="sv", color='g')
@@ -129,6 +158,14 @@ for t in range(nb_steps+1):
     if useRK4:
         X_rk4 = [sm_rk4.getVtxXs(i) for i in range(nb_vtx)]
         Y_rk4 = [sm_rk4.getVtxYs(i) for i in range(nb_vtx)]
+
+    if useEulerA:
+        X_eulerA = [sm_eulerA.getVtxXs(i) for i in range(nb_vtx)]
+        Y_eulerA = [sm_eulerA.getVtxYs(i) for i in range(nb_vtx)]
+
+    if useEulerB:
+        X_eulerB = [sm_eulerB.getVtxXs(i) for i in range(nb_vtx)]
+        Y_eulerB = [sm_eulerB.getVtxYs(i) for i in range(nb_vtx)]
 
     if useSV:
         X_sv = [sm_sv.getVtxXs(i) for i in range(nb_vtx)]
@@ -165,6 +202,20 @@ for t in range(nb_steps+1):
             Y_plot = Y_rk4[i][a:b]
             for j in range(b-a):
                 ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='r', alpha=(j+1)*deltaAlpha)
+
+        if useEulerA:
+            ax2.scatter(X_eulerA[i][t], Y_eulerA[i][t], color='orange')
+            X_plot = X_eulerA[i][a:b]
+            Y_plot = Y_eulerA[i][a:b]
+            for j in range(b-a):
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='orange', alpha=(j+1)*deltaAlpha)
+
+        if useEulerB:
+            ax2.scatter(X_eulerB[i][t], Y_eulerB[i][t], color='violet')
+            X_plot = X_eulerB[i][a:b]
+            Y_plot = Y_eulerB[i][a:b]
+            for j in range(b-a):
+                ax2.plot(X_plot[j:j+2], Y_plot[j:j+2], color='violet', alpha=(j+1)*deltaAlpha)
 
         if useSV:
             ax2.scatter(X_sv[i][t], Y_sv[i][t], color='g')

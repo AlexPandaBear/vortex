@@ -295,6 +295,140 @@ void SimKernel::computeRK4Step_multithread(DataManager &dm, size_t step, size_t 
 	integrate(dm, step);
 }
 
+void SimKernel::computeEAStep(DataManager &dm, size_t step)
+{
+	double x, y, u, v;
+	Vortex vtx(0,0,0,0);
+
+	double dt(v_time[step+1] - v_time[step]);
+
+	std::vector<Vortex> workingCopy;
+	for (auto v : v_vtx) {workingCopy.push_back(v);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				u += vtx.computeXInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(dt*dm.getUAt(step, i), 0.);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				v += vtx.computeYInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	integrate(dm, step);
+}
+
+void SimKernel::computeEBStep(DataManager &dm, size_t step)
+{
+	double x, y, u, v;
+	Vortex vtx(0,0,0,0);
+
+	double dt(v_time[step+1] - v_time[step]);
+
+	std::vector<Vortex> workingCopy;
+	for (auto v : v_vtx) {workingCopy.push_back(v);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				v += vtx.computeYInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
+				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(0., dt*dm.getVAt(step, i));}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		x = workingCopy[i].getX();
+		y = workingCopy[i].getY();
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			vtx = workingCopy[j];
+			if (j!=i)
+			{
+				u += vtx.computeXInducedVelocityAt(x, y);
+			}
+
+			if ((i!=j) && m_X_periodic)
+			{
+				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
+				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	integrate(dm, step);
+}
+
 void SimKernel::computeSVStep(DataManager &dm, size_t step)
 {
 	double x, y, u, v;
@@ -485,6 +619,11 @@ void SimKernel::computeSVIStep(DataManager &dm, size_t step)
 	integrate(dm, step);
 }
 
+void SimKernel::printSimProgression(size_t step) const
+{
+	std::cout << "\rComputing step " << step+1 << " out of " << m_nb_steps << " -- " << 100.*(step+1)/m_nb_steps << "% completed     " << std::flush;
+}
+
 void SimKernel::sim(DataManager &dm, size_t nb_threads)
 {
 	m_nb_vtx = v_vtx.size();
@@ -515,11 +654,12 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 		dm.storeRegRadiusAt(0, i, v_vtx[i].getRegRadius());
 	}
 
+
 	if (m_method == "euler")
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			printSimProgression(t);
 			computeEEStep_multithread(dm, t, nb_threads);
 		}
 	}
@@ -528,8 +668,26 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			printSimProgression(t);
 			computeRK4Step_multithread(dm, t, nb_threads);
+		}
+	}
+
+	else if (m_method == "eulerA")
+	{
+		for (size_t t = 0; t < m_nb_steps; t++)
+		{
+			printSimProgression(t);
+			computeEAStep(dm, t);
+		}
+	}
+
+	else if (m_method == "eulerB")
+	{
+		for (size_t t = 0; t < m_nb_steps; t++)
+		{
+			printSimProgression(t);
+			computeEBStep(dm, t);
 		}
 	}
 
@@ -537,7 +695,7 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			printSimProgression(t);
 			computeSVStep(dm, t);
 		}
 	}
@@ -546,7 +704,7 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	{
 		for (size_t t = 0; t < m_nb_steps; t++)
 		{
-			std::cout << "\rComputing step " << t+1 << " out of " << m_nb_steps << " -- " << 100.*t/m_nb_steps << "% completed     " << std::flush;
+			printSimProgression(t);
 			computeSVIStep(dm, t);
 		}
 	}
@@ -556,5 +714,57 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 		throw std::invalid_argument("Unknown numerical method " + m_method);
 	}
 
+
+
+/*
+	switch (m_method)
+	{
+		case "euler":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeEEStep_multithread(dm, t, nb_threads);
+			}
+
+		case "rk4":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeRK4Step_multithread(dm, t, nb_threads);
+			}
+
+		case "eulerA":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeEAStep(dm, t);
+			}
+
+		case "eulerB":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeEBStep(dm, t);
+			}
+
+		case "sv":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeSVStep(dm, t);
+			}
+
+		case "svi":
+			for (size_t t = 0; t < m_nb_steps; t++)
+			{
+				printSimProgression(t);
+				computeSVIStep(dm, t);
+			}
+
+		default:
+			throw std::invalid_argument("Unknown numerical method " + m_method);
+	}
+*/
+	
 	std::cout << std::endl;
 }

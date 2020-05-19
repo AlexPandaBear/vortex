@@ -22,8 +22,8 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used
 dataFolder = "../data"
-dataFiles = ["rk4", "sv", "rk4_H0", "sv_H0"]
-simNames = ["rk4", "sv", "rk4_H0", "sv_H0"]
+dataFiles = ["test", "test2", "test3", "test4", "test5"]
+simNames = ["Runge-Kutta 4", "Stormer-Verlet", "Euler-B", "Euler-A", "Euler Explicite"]
 
 compareParameters = True
 

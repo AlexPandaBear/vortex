@@ -31,11 +31,11 @@ nx = 50 #number of columns for the vtx matrix
 ny = 50 #number of lines for the vtx matrix
 
 t0 = 0.
-tEnd = 40.
-nb_steps = 200
+tEnd = 30.
+nb_steps = 1000
 
 #Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4) and Stormer-Verlet (sv)
-temporalIntegrationMethod = "rk4"
+temporalIntegrationMethod = "euler"
 
 periodicity = True #computes mvt considering the periodicity of the flow (4 neighbour cells used)
 
@@ -60,7 +60,7 @@ showComputationTime = True
 
 saveSim = True
 dataFolder = "../data"
-saveFile = "test3"
+saveFile = "test5"
 
 numberOfThreads = 4
 

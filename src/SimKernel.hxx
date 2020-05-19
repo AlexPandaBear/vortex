@@ -26,13 +26,24 @@ private:
 	size_t m_nb_steps;
 
 	bool readyToSim();
+	
 	void integrate(DataManager &dm, size_t step);
+	
 	void computeEEStep(DataManager &dm, size_t step, size_t firstVtx, size_t lastVtx) const;
 	void computeEEStep_multithread(DataManager &dm, size_t step, size_t nb_threads);
+	
 	void computeRK4Substep(std::vector<Vortex> &workingCopy, std::vector<double> &k_u, std::vector<double> &k_v, size_t step, size_t firstVtx, size_t lastVtx, size_t substep) const;
 	void computeRK4Step_multithread(DataManager &dm, size_t step, size_t nb_threads);
+	
+	void computeEAStep(DataManager &dm, size_t step);
+	
+	void computeEBStep(DataManager &dm, size_t step);
+	
 	void computeSVStep(DataManager &dm, size_t step);
+	
 	void computeSVIStep(DataManager &dm, size_t step);
+
+	void printSimProgression(size_t step) const;
 
 public:
 	SimKernel(bool x_periodic, bool y_periodic, double x_period, double y_period, std::string method);
