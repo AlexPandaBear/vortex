@@ -22,13 +22,13 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (works only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
-dataFile = "test"
+dataFile = "test_sv"
 
 plotVtxAnimation = False
 vtxMvt_reframe = True
 traceLength = 5
 
-plotVtxConfig = True
+plotVtxConfig = False
 vtxConfig_reframe = True
 steps_vtxConfig = [35]#[i for i in range(101) if i%10==0]
 
@@ -53,7 +53,7 @@ steps_streamlines = [i for i in range(101) if i%10==0]
 integrationStep = 0.1
 nb_streamlines = 20
 
-plotHamiltonianEvolution = False
+plotHamiltonianEvolution = True
 
 numberOfThreads = 4
 
@@ -384,13 +384,21 @@ def pressureCoef(s, nbx, nby, step):
 
 #Plots the evolution of the Hamiltonian of the system during the simulation stored in the sim. manager s
 def hamiltonianEvolution(s, nbThreads):
-	plt.figure()
-	H = s.computeHamiltonianEvolution(nbThreads)
-	plt.plot(T, H)
-	plt.xlabel("time (sec)")
-	plt.ylabel("Hamiltonian")
-	plt.title("Evolution of the Hamiltonian over the simulation")
-	plt.show()
+    plt.figure()
+    plt.title("Evolution of the Hamiltonian over the simulation")
+
+    plt.subplot(2,1,1)
+    H = s.computeHamiltonianEvolution(nbThreads)
+    plt.plot(T, H)
+    plt.ylabel("Hamiltonian")
+
+    plt.subplot(2,1,2)
+    E = [h/H[0] - 1 for h in H]
+    plt.plot(T, E)
+    plt.xlabel("time (sec)")
+    plt.ylabel("Relative error on the Hamiltonian")
+
+    plt.show()
 
 
 #%% SRCIPT

@@ -7,10 +7,13 @@
 class SimManager
 {
 private:
-	std::string name;
-	SimKernel kernel;
-	DataManager data;
-	DataAnalyst afterprocessor;
+	std::string m_name;
+	bool m_x_periodic;
+	double m_x_period;
+
+	SimKernel m_kernel;
+	DataManager m_data;
+	DataAnalyst m_afterprocessor;
 
 public:
 	SimManager();

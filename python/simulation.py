@@ -31,8 +31,8 @@ nx = 50 #number of columns for the vtx matrix
 ny = 50 #number of lines for the vtx matrix
 
 t0 = 0.
-tEnd = 20.
-nb_steps = 100
+tEnd = 400.
+nb_steps = 2000
 
 #Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4), Asymetrical Euler-A (eulerA), Asymetrical Euler-B (eulerB), Stormer-Verlet (sv) and Stormer-Verlet Inverse (svi)
 temporalIntegrationMethod = "euler"

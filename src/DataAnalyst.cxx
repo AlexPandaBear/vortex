@@ -4,7 +4,7 @@ DataAnalyst::DataAnalyst() {}
 
 DataAnalyst::~DataAnalyst() {}
 
-double DataAnalyst::computeHamiltonianAt(DataManager const &dm, size_t time_index)
+double DataAnalyst::computeHamiltonianAt(DataManager const &dm, size_t time_index, bool x_periodic, double x_period)
 {
 	size_t nb_steps = dm.getNbSteps();
 	size_t nb_vtx = dm.getNbVtx();
@@ -12,30 +12,53 @@ double DataAnalyst::computeHamiltonianAt(DataManager const &dm, size_t time_inde
 	double H(0.);
 	double deltaX, deltaY;
 
-	for (size_t i = 0; i < nb_vtx; i++)
+	if (x_periodic)
 	{
-		for (size_t j = i+1; j < nb_vtx; j++)
+		if (!(x_period > 0.))
 		{
-			if (j!=i)
+			std::ostringstream ss;
+			ss << "Unable to perform computation with this value of x-period : " << x_period;
+			throw std::invalid_argument(ss.str());
+		}
+
+		double factor(2*M_PI/x_period);
+
+		for (size_t i = 0; i < nb_vtx; i++)
+		{
+			for (size_t j = i+1; j < nb_vtx; j++)
 			{
 				deltaX = dm.getXAt(time_index, i) - dm.getXAt(time_index, j);
 				deltaY = dm.getYAt(time_index, i) - dm.getYAt(time_index, j);
-				H += dm.getCirculationAt(time_index, i)*dm.getCirculationAt(time_index, i)*0.5*log(deltaX*deltaX + deltaY*deltaY);
+				H += dm.getCirculationAt(time_index, i)*dm.getCirculationAt(time_index, j) * log(cosh(factor*deltaY) - cos(factor*deltaX));
 			}
 		}
 	}
-	return -H/(4*M_PI);
+
+	else
+	{
+		for (size_t i = 0; i < nb_vtx; i++)
+		{
+			for (size_t j = i+1; j < nb_vtx; j++)
+			{
+				deltaX = dm.getXAt(time_index, i) - dm.getXAt(time_index, j);
+				deltaY = dm.getYAt(time_index, i) - dm.getYAt(time_index, j);
+				H += dm.getCirculationAt(time_index, i)*dm.getCirculationAt(time_index, j)*0.5*log(deltaX*deltaX + deltaY*deltaY);
+			}
+		}
+	}
+
+	return H/(4*M_PI);
 }
 
-void DataAnalyst::computeHamiltonianEvolutionBetween(DataManager const &dm, size_t start_step, size_t end_step, std::vector<double> &v_H)
+void DataAnalyst::computeHamiltonianEvolutionBetween(DataManager const &dm, size_t start_step, size_t end_step, std::vector<double> &v_H, bool x_periodic, double x_period)
 {
 	for (size_t t = start_step; t < end_step; t++)
 	{
-		v_H[t] = computeHamiltonianAt(dm, t);
+		v_H[t] = computeHamiltonianAt(dm, t, x_periodic, x_period);
 	}
 }
 
-std::vector<double> DataAnalyst::computeHamiltonianEvolution(DataManager const &dm, size_t nb_threads)
+std::vector<double> DataAnalyst::computeHamiltonianEvolution(DataManager const &dm, size_t nb_threads, bool x_periodic, double x_period)
 {
 	if (nb_threads < 1)
 	{
@@ -52,13 +75,13 @@ std::vector<double> DataAnalyst::computeHamiltonianEvolution(DataManager const &
 
 	for (size_t i = 0; i < nb_threads-1; i++)
 	{
-		v_threads.push_back(std::thread(&DataAnalyst::computeHamiltonianEvolutionBetween, std::ref(dm), start_step, end_step, std::ref(v_H)));
+		v_threads.push_back(std::thread(&DataAnalyst::computeHamiltonianEvolutionBetween, std::ref(dm), start_step, end_step, std::ref(v_H), x_periodic, x_period));
 		start_step = end_step;
 		end_step += nb_steps/nb_threads;
 	}
 
 	end_step = nb_steps+1;
-	computeHamiltonianEvolutionBetween(dm, start_step, end_step, v_H);
+	computeHamiltonianEvolutionBetween(dm, start_step, end_step, v_H, x_periodic, x_period);
 
 	for (auto &th : v_threads) {th.join();}
 
