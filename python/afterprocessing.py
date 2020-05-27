@@ -37,8 +37,8 @@ steps_compositionField = [i for i in range(101) if i%10==0]
 compositionRadius = "auto"
 plotCompoAnimation = False
 
-plotVelocityField = False
-steps_velocityField = [i for i in range(101) if i%10==0]
+plotVelocityField = True
+steps_velocityField = [55] #[i for i in range(101) if i%10==0]
 showVelocityVectors = True
 
 plotVorticityField = False
@@ -53,7 +53,7 @@ steps_streamlines = [i for i in range(101) if i%10==0]
 integrationStep = 0.1
 nb_streamlines = 20
 
-plotHamiltonianEvolution = True
+plotHamiltonianEvolution = False
 
 numberOfThreads = 4
 
@@ -275,7 +275,7 @@ def velocityField(s, nbx, nby, step):
         	for j in range(nby):
         		mag_star = M[j,i]/U0
         		arg = A[j,i]
-        		plt.annotate('', xy=(x[i]+0.8*h*mag_star*np.cos(arg),y[j]+0.8*h*mag_star*np.sin(arg)), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
+        		plt.annotate('', xy=(x[i]+h*mag_star*np.cos(arg),y[j]+h*mag_star*np.sin(arg)), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
 
     plt.contourf(X, Y, M, alpha=.75, cmap='jet')
     c = plt.contour(X, Y, M, colors='black')
