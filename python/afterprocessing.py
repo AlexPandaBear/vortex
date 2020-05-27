@@ -28,11 +28,11 @@ plotVtxAnimation = False
 vtxMvt_reframe = True
 traceLength = 5
 
-plotVtxConfig = False
+plotVtxConfig = True
 vtxConfig_reframe = True
-steps_vtxConfig = [i for i in range(101) if i%10==0]
+steps_vtxConfig = [35]#[i for i in range(101) if i%10==0]
 
-plotCompositionField = True
+plotCompositionField = False
 steps_compositionField = [i for i in range(101) if i%10==0]
 compositionRadius = "auto"
 plotCompoAnimation = False
