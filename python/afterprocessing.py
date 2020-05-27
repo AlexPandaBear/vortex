@@ -20,7 +20,7 @@ import _vortex as vtx
 
 print("Reading instructions")
 
-loadNewData = True #if False, previously loaded data will be used (useful only if python is used in interactive mode (-i) or in an IDE)
+loadNewData = True #if False, previously loaded data will be used (works only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
 dataFile = "test"
 
@@ -30,26 +30,26 @@ traceLength = 5
 
 plotVtxConfig = False
 vtxConfig_reframe = True
-steps_vtxConfig = [i for i in range(1001) if i%100==0]
+steps_vtxConfig = [i for i in range(101) if i%10==0]
 
-plotCompositionField = False
-steps_compositionField = [i for i in range(1001) if i%100==0]
+plotCompositionField = True
+steps_compositionField = [i for i in range(101) if i%10==0]
 compositionRadius = "auto"
 plotCompoAnimation = False
 
-plotVelocityField = True
-steps_velocityField = [i for i in range(1001) if i%100==0]
-showVelocityVectors = False
+plotVelocityField = False
+steps_velocityField = [i for i in range(101) if i%10==0]
+showVelocityVectors = True
 
 plotVorticityField = False
-steps_vorticityField = [i for i in range(1001) if i%100==0]
+steps_vorticityField = [i for i in range(101) if i%10==0]
 derivationDistance = "auto"
 
 plotPressureCoefField = False
 steps_pressureCoefField = [0, 100, 200, 500, 1000]
 
 plotStreamlines = False
-steps_streamlines = [0, 100, 200, 500, 1000]
+steps_streamlines = [i for i in range(101) if i%10==0]
 integrationStep = 0.1
 nb_streamlines = 20
 
@@ -262,11 +262,11 @@ def velocityField(s, nbx, nby, step):
 
     for i in range(nbx):
     	for j in range(nby):
-    		res = s.computeVelocityAt(x[i], y[j], step, periodicity, width)
-    		U[j,i] = res[0]
-    		V[j,i] = res[1]
-    		M[j,i] = res[2]
-    		A[j,i] = res[3]
+            res = s.computeVelocityAt(x[i], y[j], step, periodicity, width)
+            U[j,i] = res[0]
+            V[j,i] = res[1]
+            M[j,i] = res[2]
+            A[j,i] = res[3]
 
     h = min(width/(nbx-1), height/(nby-1))
 

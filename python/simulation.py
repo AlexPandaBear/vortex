@@ -24,17 +24,17 @@ height = 10.
 
 U0 = 1. #initial velocity of the top layer (bottom one's is -U0)
 
-RSLT = 0.3 #relative shear layer thickness
+RSLT = 0.5 #relative shear layer thickness
 RIHPA = 0.3 #relative initial harmonic perturbation amplitude
 
 nx = 50 #number of columns for the vtx matrix
 ny = 50 #number of lines for the vtx matrix
 
 t0 = 0.
-tEnd = 30.
-nb_steps = 1000
+tEnd = 20.
+nb_steps = 100
 
-#Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4) and Stormer-Verlet (sv)
+#Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4), Asymetrical Euler-A (eulerA), Asymetrical Euler-B (eulerB), Stormer-Verlet (sv) and Stormer-Verlet Inverse (svi)
 temporalIntegrationMethod = "euler"
 
 periodicity = True #computes mvt considering the periodicity of the flow (4 neighbour cells used)
@@ -60,7 +60,7 @@ showComputationTime = True
 
 saveSim = True
 dataFolder = "../data"
-saveFile = "test5"
+saveFile = "test"
 
 numberOfThreads = 4
 

@@ -123,26 +123,25 @@ double DataAnalyst::computeUAt(DataManager const &dm, size_t time_index, double 
 	size_t nb_vtx = dm.getNbVtx();
 
 	double u(0.);
-
 	double vtx_x, vtx_y, vtx_circ, vtx_rad;
-	
-	for (size_t v = 0; v < nb_vtx; v++)
-	{
-		vtx_x = dm.getXAt(time_index, v);
-		vtx_y = dm.getYAt(time_index, v);
-		vtx_circ = dm.getCirculationAt(time_index, v);
-		vtx_rad = dm.getRegRadiusAt(time_index, v);
 
-		u += Vortex::computeXInducedVelocityAt(x, y, vtx_x, vtx_y, vtx_circ, vtx_rad);
+	Vortex vtx(0., 0., 0., 0.);
+	
+	for (size_t i = 0; i < nb_vtx; i++)
+	{
+		vtx_x = dm.getXAt(time_index, i);
+		vtx_y = dm.getYAt(time_index, i);
+		vtx_circ = dm.getCirculationAt(time_index, i);
+		vtx_rad = dm.getRegRadiusAt(time_index, i);
+
+		vtx = Vortex(vtx_x, vtx_y, vtx_circ, vtx_rad, 0, x_periodic, x_period);
 
 		if (x_periodic)
 		{
-			u += Vortex::computeXInducedVelocityAt(x, y, vtx_x + x_period, vtx_y, vtx_circ, vtx_rad);
-			u += Vortex::computeXInducedVelocityAt(x, y, vtx_x - x_period, vtx_y, vtx_circ, vtx_rad);
-
-			u += Vortex::computeXInducedVelocityAt(x, y, vtx_x + 2*x_period, vtx_y, vtx_circ, vtx_rad);
-			u += Vortex::computeXInducedVelocityAt(x, y, vtx_x - 2*x_period, vtx_y, vtx_circ, vtx_rad);
+			vtx.prepareFactors();
 		}
+		
+		u += vtx.computeXInducedVelocityAt(x, y);
 	}
 
 	return u;
@@ -166,30 +165,29 @@ double DataAnalyst::computeVAt(DataManager const &dm, size_t time_index, double 
 	size_t nb_steps = dm.getNbSteps();
 	size_t nb_vtx = dm.getNbVtx();
 
-	double u(0.);
-
+	double v(0.);
 	double vtx_x, vtx_y, vtx_circ, vtx_rad;
-	
-	for (size_t v = 0; v < nb_vtx; v++)
-	{
-		vtx_x = dm.getXAt(time_index, v);
-		vtx_y = dm.getYAt(time_index, v);
-		vtx_circ = dm.getCirculationAt(time_index, v);
-		vtx_rad = dm.getRegRadiusAt(time_index, v);
 
-		u += Vortex::computeYInducedVelocityAt(x, y, vtx_x, vtx_y, vtx_circ, vtx_rad);
+	Vortex vtx(0., 0., 0., 0.);
+	
+	for (size_t i = 0; i < nb_vtx; i++)
+	{
+		vtx_x = dm.getXAt(time_index, i);
+		vtx_y = dm.getYAt(time_index, i);
+		vtx_circ = dm.getCirculationAt(time_index, i);
+		vtx_rad = dm.getRegRadiusAt(time_index, i);
+
+		vtx = Vortex(vtx_x, vtx_y, vtx_circ, vtx_rad, 0, x_periodic, x_period);
 
 		if (x_periodic)
 		{
-			u += Vortex::computeYInducedVelocityAt(x, y, vtx_x + x_period, vtx_y, vtx_circ, vtx_rad);
-			u += Vortex::computeYInducedVelocityAt(x, y, vtx_x - x_period, vtx_y, vtx_circ, vtx_rad);
-
-			u += Vortex::computeYInducedVelocityAt(x, y, vtx_x + 2*x_period, vtx_y, vtx_circ, vtx_rad);
-			u += Vortex::computeYInducedVelocityAt(x, y, vtx_x - 2*x_period, vtx_y, vtx_circ, vtx_rad);
+			vtx.prepareFactors();
 		}
+		
+		v += vtx.computeYInducedVelocityAt(x, y);
 	}
 
-	return u;
+	return v;
 }
 
 std::vector<double> DataAnalyst::computeVEvolutionAt(DataManager const &dm, double x, double y, bool x_periodic, double x_period)

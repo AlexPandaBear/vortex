@@ -25,7 +25,7 @@ t0 = 0.
 tEnd = 10000.
 nb_steps = [10000, 20000, 40000, 80000, 160000]
 nb_threads = 4
-method = "euler"
+method = "sv"
 
 trLen = 20 #Trace length in animation
 

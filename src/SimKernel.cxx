@@ -112,18 +112,6 @@ void SimKernel::computeEEStep(DataManager &dm, size_t step, size_t firstVtx, siz
 				u += vtx.computeXInducedVelocityAt(x, y);
 				v += vtx.computeYInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeUAt(step, i, u);
@@ -176,18 +164,6 @@ void SimKernel::computeRK4Substep(std::vector<Vortex> &workingCopy, std::vector<
 			{
 				k_u[i] += vtx.computeXInducedVelocityAt(x, y);
 				k_v[i] += vtx.computeYInducedVelocityAt(x, y);
-			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				k_u[i] += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				k_u[i] += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				k_u[i] += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				k_u[i] += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
-				k_v[i] += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				k_v[i] += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				k_v[i] += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				k_v[i] += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
 			}
 		}
 	}
@@ -286,6 +262,8 @@ void SimKernel::computeRK4Step_multithread(DataManager &dm, size_t step, size_t 
 
 	for (auto &th : v_threads_k4) {th.join();}
 
+	//storage
+
 	for (size_t i = 0; i < m_nb_vtx; i++)
 	{
 		dm.storeUAt(step, i, (k1_u[i] + k2_u[i]*2. + k3_u[i]*2. + k4_u[i])/6.);
@@ -318,14 +296,6 @@ void SimKernel::computeEAStep(DataManager &dm, size_t step)
 			{
 				u += vtx.computeXInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeUAt(step, i, u);
@@ -345,14 +315,6 @@ void SimKernel::computeEAStep(DataManager &dm, size_t step)
 			if (j!=i)
 			{
 				v += vtx.computeYInducedVelocityAt(x, y);
-			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
 			}
 		}
 
@@ -385,14 +347,6 @@ void SimKernel::computeEBStep(DataManager &dm, size_t step)
 			{
 				v += vtx.computeYInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeVAt(step, i, v);
@@ -412,14 +366,6 @@ void SimKernel::computeEBStep(DataManager &dm, size_t step)
 			if (j!=i)
 			{
 				u += vtx.computeXInducedVelocityAt(x, y);
-			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
 			}
 		}
 
@@ -452,14 +398,6 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 			{
 				u += vtx.computeXInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeUAt(step, i, u);
@@ -480,14 +418,6 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 			{
 				v += vtx.computeYInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeVAt(step, i, v);
@@ -499,7 +429,7 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 	{
 		x = workingCopy[i].getX();
 		y = workingCopy[i].getY();
-		u = dm.getUAt(step, i);
+		u = 0.;
 
 		for (size_t j = 0; j < m_nb_vtx; j++)
 		{
@@ -508,17 +438,10 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 			{
 				u += vtx.computeXInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
-		dm.storeUAt(step, i, u/2.);
+		double u1 = dm.getUAt(step, i);
+		dm.storeUAt(step, i, 0.5*(u + u1));
 	}
 
 	integrate(dm, step);
@@ -547,14 +470,6 @@ void SimKernel::computeSVIStep(DataManager &dm, size_t step)
 			{
 				v += vtx.computeYInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeVAt(step, i, v);
@@ -574,14 +489,6 @@ void SimKernel::computeSVIStep(DataManager &dm, size_t step)
 			if (j!=i)
 			{
 				u += vtx.computeXInducedVelocityAt(x, y);
-			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				u += vtx.computeXInducedVelocityAt(x + m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x + 2*m_X_period, y);
-				u += vtx.computeXInducedVelocityAt(x - 2*m_X_period, y);
 			}
 		}
 
@@ -603,14 +510,6 @@ void SimKernel::computeSVIStep(DataManager &dm, size_t step)
 			{
 				v += vtx.computeYInducedVelocityAt(x, y);
 			}
-
-			if ((i!=j) && m_X_periodic)
-			{
-				v += vtx.computeYInducedVelocityAt(x + m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x + 2*m_X_period, y);
-				v += vtx.computeYInducedVelocityAt(x - 2*m_X_period, y);
-			}
 		}
 
 		dm.storeVAt(step, i, v/2.);
@@ -629,10 +528,22 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 	m_nb_vtx = v_vtx.size();
 	m_nb_steps = v_time.size()-1;
 
+	
 	if (!readyToSim())
 	{
 		throw std::invalid_argument("Bad choice of vortices");
 	}
+
+	if (m_X_periodic)
+	{
+		for (size_t i = 0; i < m_nb_vtx; i++)
+		{
+			v_vtx[i].setXPeriodicity(m_X_periodic);
+			v_vtx[i].setXPeriod(m_X_period);
+			v_vtx[i].prepareFactors();
+		}
+	}
+
 
 	dm.reset(m_nb_steps, m_nb_vtx);
 
