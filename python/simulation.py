@@ -19,12 +19,12 @@ import time
 
 print("Loading parameters")
 
-width = 10.
+width = 15.
 height = 10.
 
 U0 = 1. #initial velocity of the top layer (bottom one's is -U0)
 
-RSLT = 0.5 #relative shear layer thickness
+RSLT = 0.2 #relative shear layer thickness
 RIHPA = 0.3 #relative initial harmonic perturbation amplitude
 
 nx = 50 #number of columns for the vtx matrix
@@ -51,7 +51,7 @@ regRadius = max(dx, dy)
 
 print("Reading instructions")
 
-ignoreNullCircVtx = True
+ignoreNullCircVtx = False
 showRealVtxNumber = True
 
 plotInitialProfiles = True

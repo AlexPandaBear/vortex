@@ -1,6 +1,8 @@
 # PIR VORTEX METHOD
 Alexandre DUTKA - ISAE-SUPAERO - 05/2020
 
+![alt text](logo.png "A quick preview...")
+
 ## Requirements
 CMake  
 C++ compiler  

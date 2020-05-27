@@ -208,9 +208,9 @@ def fluidComposition(s, nbx, nby, step, radius):
             if math.isnan(C[j,i]):
             	C[j,i] = 0.
 
-    plt.contourf(X, Y, C, alpha=.75, cmap='seismic')
-    c = plt.contour(X, Y, C, colors='black')
-    plt.clabel(c)
+    plt.imshow(C, extent=[0, width, -0.5*height, 0.5*height], origin="lower", alpha=.75, cmap='seismic')
+    #c = plt.contour(X, Y, C, colors='black')
+    #plt.clabel(c)
 
     plt.show()
 
