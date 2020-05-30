@@ -10,6 +10,7 @@ Python 3+
 PyBind11  
 NumPy  
 Matplotlib  
+Doxygen  
 
 ## How to install
 ```console
