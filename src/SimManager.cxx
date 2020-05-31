@@ -4,7 +4,7 @@ SimManager::SimManager() :
 	m_name(""),
 	m_x_periodic(false),
 	m_x_period(0.),
-	m_kernel(false, false, 0., 0., "eulerExp"),
+	m_kernel(false, false, 0., 0., "euler"),
 	m_data(0, 0),
 	m_afterprocessor() {}
 

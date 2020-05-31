@@ -8,12 +8,17 @@
 
 /**
  * A class providing different methods to post-process simulation data
+ *
+ * @todo Put a DataManager reference as member => no more static methods
  */
 class DataAnalyst
 {
+private:
+	static void computeHamiltonianEvolutionBetween(DataManager const &dm, size_t start_step, size_t end_step, std::vector<double> &v_H, bool x_periodic, double x_period);
+
 public:
 	/**
-	 * The constructor of the class \todo
+	 * The constructor of the class
 	 */
 	DataAnalyst();
 
@@ -36,11 +41,6 @@ public:
 	 * @returns The value of the Hamiltonian
 	 */
 	static double computeHamiltonianAt(DataManager const &dm, size_t time_index, bool x_periodic, double x_period);
-
-	/**
-	 * \todo
-	 */
-	static void computeHamiltonianEvolutionBetween(DataManager const &dm, size_t start_step, size_t end_step, std::vector<double> &v_H, bool x_periodic, double x_period);
 	
 	/**
 	 * Method computing the evolution of the Hamiltonian of the point vortex system over the simulation

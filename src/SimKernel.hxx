@@ -10,6 +10,8 @@
 
 /**
  * A class implementing the kernel of the Vortex Method
+ *
+ * @todo Implement y-periodicity
  */
 class SimKernel
 {
@@ -54,7 +56,7 @@ public:
 	 *
 	 * @param x_periodic A boolean telling if the simulation is x-periodic
 	 *
-	 * @param y_periodic A boolean telling if the simulation is y-periodic \todo
+	 * @param y_periodic A boolean telling if the simulation is y-periodic
 	 *
 	 * @param x_period The value of the eventual spatial period along the x-axis
 	 *
