@@ -4,16 +4,16 @@ Alexandre DUTKA - ISAE-SUPAERO - 05/2020
 ![alt text](logo.png "A quick preview...")
 
 ## Requirements
-### To compile the library :
+To compile the library :
 - CMake  
 - A C++ compiler  
 - The PyBind11 library  
 
-### To use it with Python :
+To use it with Python :
 - Python 3+  
 - The Numpy and Matplotlib libraries  
 
-### To generate the reference documentation :
+To generate the reference documentation :
 - Doxygen  
 
 ## How to install
@@ -36,8 +36,13 @@ user@linux:~/path/to/code/build$ make reference_doc
 ```
 
 ## How to use
+Execute these commands to get to the python directory and add the library to the PYTHONPATH.
 ```console
 user@linux:~/path/to/code$ cd python
 user@linux:~/path/to/code/python$ export PYTHONPATH=$PWD/../build/install/lib/python
-user@linux:~/path/to/code/python$ python -i <script>
+```
+
+Use this command to execute the python scripts. Eventually insert "-i" after "python" to use the interactive mode after.
+```console
+user@linux:~/path/to/code/python$ python <script>
 ```
