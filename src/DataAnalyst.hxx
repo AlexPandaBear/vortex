@@ -8,8 +8,6 @@
 
 /**
  * A class providing different methods to post-process simulation data
- *
- * @todo Put a DataManager reference as member => no more static methods
  */
 class DataAnalyst
 {
@@ -21,6 +19,8 @@ private:
 public:
 	/**
 	 * The constructor of the class
+	 *
+	 * @param dm The DataManager object where the data from the simulation to analyse is stored
 	 */
 	DataAnalyst(DataManager const &dm);
 
@@ -29,12 +29,15 @@ public:
 	 */
 	~DataAnalyst();
 
+	/**
+	 * Method changing the DataManager object this instance will use to perform the computations in the future
+	 *
+	 * @param dm The new DataManager object to use
+	 */
 	void resetDataPtr(DataManager const &dm);
 
 	/**
 	 * Method computing the Hamiltonian of the point vortex system at a given time step
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param time_index The targetted time step to perform the computation
 	 *
@@ -49,8 +52,6 @@ public:
 	/**
 	 * Method computing the evolution of the Hamiltonian of the point vortex system over the simulation
 	 *
-	 * @param dm The DataManager object where the simulation is stored
-	 *
 	 * @param nb_threads The number of threads to use for computation (must be greater than 1)
 	 *
 	 * @param x_periodic A boolean telling if the flow is periodic along the x-axis or not
@@ -63,8 +64,6 @@ public:
 
 	/**
 	 * Method computing the composition of the flow at a given point in space ans at a given time step
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param x The x-coordinate of the point where the computation will be done
 	 *
@@ -81,8 +80,6 @@ public:
 	/**
 	 * Method computing the evolution of the composition at a given point in space over the simulation
 	 *
-	 * @param dm The DataManager object where the simulation is stored
-	 *
 	 * @param x The x-coordinate of the point where the computations will be done
 	 *
 	 * @param y The y-coordinate of the point where the computations will be done
@@ -95,8 +92,6 @@ public:
 	
 	/**
 	 * Method computing the projection on the x-axis of the velocity induced by the whole system of point vortices at a specific point in space and at a specific time step
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param time_index The time step where the computation will be done
 	 *
@@ -115,8 +110,6 @@ public:
 	/**
 	 * Method computing the evolution of the velocity projected on the x-axis at a given point in space over the simulation
 	 *
-	 * @param dm The DataManager object where the simulation is stored
-	 *
 	 * @param x The x-coordinate of the point where the computations will be done
 	 *
 	 * @param y The y-coordinate of the point where the computations will be done
@@ -131,8 +124,6 @@ public:
 	
 	/**
 	 * Method computing the projection on the y-axis of the velocity induced by the whole system of point vortices at a specific point in space and at a specific time step
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param time_index The time step where the computation will be done
 	 *
@@ -151,8 +142,6 @@ public:
 	/**
 	 * Method computing the evolution of the velocity projected on the y-axis at a given point in space over the simulation
 	 *
-	 * @param dm The DataManager object where the simulation is stored
-	 *
 	 * @param x The x-coordinate of the point where the computations will be done
 	 *
 	 * @param y The y-coordinate of the point where the computations will be done
@@ -167,8 +156,6 @@ public:
 
 	/**
 	 * Method computing the vorticity at a given point in space and a given time step
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param time_index The time step where the computation will be done
 	 *
@@ -188,8 +175,6 @@ public:
 	
 	/**
 	 * Method computing the evolution of the vorticity at a given point in space over the simulation
-	 *
-	 * @param dm The DataManager object where the simulation is stored
 	 *
 	 * @param x The x-coordinate of the point where the computations will be done
 	 *

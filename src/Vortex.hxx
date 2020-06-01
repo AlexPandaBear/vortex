@@ -102,49 +102,49 @@ public:
 	/**
 	 * Setter for the x-coordinate of the instance
 	 *
-	 * @param The new x-coordinate of the instance
+	 * @param newX The new x-coordinate of the instance
 	 */
 	void setX(double newX);
 	
 	/**
 	 * Setter for the y-coordinate of the instance
 	 *
-	 * @param The new y-coordinate of the instance
+	 * @param newY The new y-coordinate of the instance
 	 */
 	void setY(double newY);
 
 	/**
 	 * Setter for the circulation of the instance
 	 *
-	 * @param The new velocity circulation of the instance
+	 * @param newCirculation The new velocity circulation of the instance
 	 */
 	void setCirculation(double newCirculation);
 
 	/**
 	 * Setter for the regularization radius of the instance
 	 *
-	 * @param The new regularization radius of the instance
+	 * @param newRegRadius The new regularization radius of the instance
 	 */
 	void setRegRadius(double newRegRadius);
 
 	/**
 	 * Setter for the fluid of the instance
 	 *
-	 * @param The new fluid identification number of the instance
+	 * @param newId The new fluid identification number of the instance
 	 */
 	void setFluidId(size_t newId);
 
 	/**
 	 * Setter for the x-periodicity of the instance
 	 *
-	 * @param The new x-periodicity boolean of the instance
+	 * @param newXPeriodicity The new x-periodicity boolean of the instance
 	 */
 	void setXPeriodicity(bool newXPeriodicity);
 
 	/**
 	 * Setter for the x-period of the instance
 	 *
-	 * @param The new spatial period along the x-axis of the instance
+	 * @param newXPeriod The new spatial period along the x-axis of the instance
 	 */
 	void setXPeriod(double newXPeriod);
 

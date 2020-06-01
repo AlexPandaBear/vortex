@@ -219,7 +219,7 @@ public:
 	 * 
 	 * @param z1 The first vector used to compute the dot product
 	 * 
-	 * @param z1 The second vector used to compute the dot product
+	 * @param z2 The second vector used to compute the dot product
 	 * 
 	 * @returns The dot product as a double
 	 */
@@ -230,7 +230,7 @@ public:
 	 * 
 	 * @param z1 The first vector used to compute the cross product
 	 * 
-	 * @param z1 The second vector used to compute the cross product
+	 * @param z2 The second vector used to compute the cross product
 	 * 
 	 * @returns The norm of the cross product as a double
 	 */

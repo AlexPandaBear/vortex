@@ -2,6 +2,11 @@
 
 #include "Complex.hxx"
 
+/**
+ * A class representing a point vortex
+ *
+ * @deprecated Use instead the Vortex class
+ */
 class VortexCmplx
 {
 private:
