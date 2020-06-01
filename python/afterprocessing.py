@@ -22,7 +22,7 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (works only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
-dataFile = "test_sv"
+dataFile = "new_DA_test"
 
 plotVtxAnimation = False
 vtxMvt_reframe = True
@@ -38,7 +38,7 @@ compositionRadius = "auto"
 plotCompoAnimation = False
 
 plotVelocityField = True
-steps_velocityField = [55] #[i for i in range(101) if i%10==0]
+steps_velocityField = [i for i in range(101) if i%10==0]
 showVelocityVectors = True
 
 plotVorticityField = False
@@ -46,7 +46,7 @@ steps_vorticityField = [i for i in range(101) if i%10==0]
 derivationDistance = "auto"
 
 plotPressureCoefField = False
-steps_pressureCoefField = [0, 100, 200, 500, 1000]
+steps_pressureCoefField = [i for i in range(101) if i%10==0]
 
 plotStreamlines = False
 steps_streamlines = [i for i in range(101) if i%10==0]
@@ -272,10 +272,10 @@ def velocityField(s, nbx, nby, step):
 
     if showVelocityVectors:
         for i in range(nbx):
-        	for j in range(nby):
-        		mag_star = M[j,i]/U0
-        		arg = A[j,i]
-        		plt.annotate('', xy=(x[i]+h*mag_star*np.cos(arg),y[j]+h*mag_star*np.sin(arg)), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
+            for j in range(nby):
+                u_star = U[j,i]/U0
+                v_star = V[j,i]/U0
+                plt.annotate('', xy=( x[i] + h*u_star , y[j] + h*v_star ), xytext=(x[i],y[j]), arrowprops={'arrowstyle': '->', 'lw': 2, 'color': 'white'}, va='center')
 
     plt.contourf(X, Y, M, alpha=.75, cmap='jet')
     c = plt.contour(X, Y, M, colors='black')

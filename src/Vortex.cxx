@@ -111,7 +111,14 @@ double Vortex::computeXInducedVelocityAt(double x, double y) const
 
 	if (m_X_periodic)
 	{
-		return - m_global_factor * sinh(m_common_factor * deltaY) / ( cosh(m_common_factor * deltaY) - cos(m_common_factor * deltaX) );
+		double den(cosh(m_common_factor * deltaY) - cos(m_common_factor * deltaX));
+		
+		if (den == 0.) //Should not happen but in some edge cases...
+		{
+			return 0.;
+		}
+		
+		return - m_global_factor * sinh(m_common_factor * deltaY) / den;
 	}
 	
 	return - (m_circ * deltaY) / (2 * M_PI * r2);
@@ -129,7 +136,14 @@ double Vortex::computeYInducedVelocityAt(double x, double y) const
 
 	if (m_X_periodic)
 	{
-		return m_global_factor * sin(m_common_factor * deltaX) / ( cosh(m_common_factor * deltaY) - cos(m_common_factor * deltaX) );
+		double den(cosh(m_common_factor * deltaY) - cos(m_common_factor * deltaX));
+		
+		if (den == 0.) //Should not happen but in some edge cases...
+		{
+			return 0.;
+		}
+		
+		return m_global_factor * sin(m_common_factor * deltaX) / den;
 	}
 	
 	return (m_circ * deltaX) / (2 * M_PI * r2);

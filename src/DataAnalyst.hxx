@@ -14,18 +14,22 @@
 class DataAnalyst
 {
 private:
-	static void computeHamiltonianEvolutionBetween(DataManager const &dm, size_t start_step, size_t end_step, std::vector<double> &v_H, bool x_periodic, double x_period);
+	DataManager const * ptr_data;
+
+	void computeHamiltonianEvolutionBetween(size_t start_step, size_t end_step, std::vector<double> &v_H, bool x_periodic, double x_period) const;
 
 public:
 	/**
 	 * The constructor of the class
 	 */
-	DataAnalyst();
+	DataAnalyst(DataManager const &dm);
 
 	/**
 	 * The destructor of the class
 	 */
 	~DataAnalyst();
+
+	void resetDataPtr(DataManager const &dm);
 
 	/**
 	 * Method computing the Hamiltonian of the point vortex system at a given time step
@@ -40,7 +44,7 @@ public:
 	 *
 	 * @returns The value of the Hamiltonian
 	 */
-	static double computeHamiltonianAt(DataManager const &dm, size_t time_index, bool x_periodic, double x_period);
+	double computeHamiltonianAt(size_t time_index, bool x_periodic, double x_period) const;
 	
 	/**
 	 * Method computing the evolution of the Hamiltonian of the point vortex system over the simulation
@@ -55,7 +59,7 @@ public:
 	 *
 	 * @returns A std::vector containing the value of the Hamiltonian at each time step
 	 */
-	static std::vector<double> computeHamiltonianEvolution(DataManager const &dm, size_t nb_threads, bool x_periodic, double x_period);
+	std::vector<double> computeHamiltonianEvolution(size_t nb_threads, bool x_periodic, double x_period) const;
 
 	/**
 	 * Method computing the composition of the flow at a given point in space ans at a given time step
@@ -72,7 +76,7 @@ public:
 	 *
 	 * @returns A std::map<size_t,double> where the keys are the fluid identification numbers and the values are the proportion of this fluid at the point of computation
 	 */
-	static std::map<size_t, double> computeCompositionAt(DataManager const &dm, double x, double y, size_t step, double radius);
+	std::map<size_t, double> computeCompositionAt(double x, double y, size_t step, double radius) const;
 
 	/**
 	 * Method computing the evolution of the composition at a given point in space over the simulation
@@ -87,7 +91,7 @@ public:
 	 *
 	 * @returns A std::vector containing all the std::map<size_t,double> computed for each time step by the computeCompositionAt method
 	 */
-	static std::vector<std::map<size_t, double>> computeCompositionEvolutionAt(DataManager const &dm, double x, double y, double radius);
+	std::vector<std::map<size_t, double>> computeCompositionEvolutionAt(double x, double y, double radius) const;
 	
 	/**
 	 * Method computing the projection on the x-axis of the velocity induced by the whole system of point vortices at a specific point in space and at a specific time step
@@ -106,7 +110,7 @@ public:
 	 *
 	 * @returns The computed velocity projection on the x-axis
 	 */
-	static double computeUAt(DataManager const &dm, size_t time_index, double x, double y, bool x_periodic, double x_period);
+	double computeUAt(size_t time_index, double x, double y, bool x_periodic, double x_period) const;
 	
 	/**
 	 * Method computing the evolution of the velocity projected on the x-axis at a given point in space over the simulation
@@ -123,7 +127,7 @@ public:
 	 *
 	 * @returns A std::vector of the computed velocity projections for each time step
 	 */
-	static std::vector<double> computeUEvolutionAt(DataManager const &dm, double x, double y, bool x_periodic, double x_period);
+	std::vector<double> computeUEvolutionAt(double x, double y, bool x_periodic, double x_period) const;
 	
 	/**
 	 * Method computing the projection on the y-axis of the velocity induced by the whole system of point vortices at a specific point in space and at a specific time step
@@ -142,7 +146,7 @@ public:
 	 *
 	 * @returns The computed velocity projection on the y-axis
 	 */
-	static double computeVAt(DataManager const &dm, size_t time_index, double x, double y, bool x_periodic, double x_period);
+	double computeVAt(size_t time_index, double x, double y, bool x_periodic, double x_period) const;
 	
 	/**
 	 * Method computing the evolution of the velocity projected on the y-axis at a given point in space over the simulation
@@ -159,7 +163,7 @@ public:
 	 *
 	 * @returns A std::vector of the computed velocity projections for each time step
 	 */
-	static std::vector<double> computeVEvolutionAt(DataManager const &dm, double x, double y, bool x_periodic, double x_period);
+	std::vector<double> computeVEvolutionAt(double x, double y, bool x_periodic, double x_period) const;
 
 	/**
 	 * Method computing the vorticity at a given point in space and a given time step
@@ -180,7 +184,7 @@ public:
 	 *
 	 * @returns The computed vorticity at the given point in time and space
 	 */
-	static double computeVorticityAt(DataManager const &dm, size_t time_index, double x, double y, bool x_periodic, double x_period, double h);
+	double computeVorticityAt(size_t time_index, double x, double y, bool x_periodic, double x_period, double h) const;
 	
 	/**
 	 * Method computing the evolution of the vorticity at a given point in space over the simulation
@@ -199,5 +203,5 @@ public:
 	 *
 	 * @returns A std::vector of the computed vorticities for each time step
 	 */
-	static std::vector<double> computeVorticityEvolutionAt(DataManager const &dm, double x, double y, bool x_periodic, double x_period, double h);
+	std::vector<double> computeVorticityEvolutionAt(double x, double y, bool x_periodic, double x_period, double h) const;
 };

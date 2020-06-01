@@ -6,7 +6,7 @@ SimManager::SimManager() :
 	m_x_period(0.),
 	m_kernel(false, false, 0., 0., "euler"),
 	m_data(0, 0),
-	m_afterprocessor() {}
+	m_afterprocessor(m_data) {}
 
 SimManager::~SimManager() {}
 
@@ -198,13 +198,13 @@ std::vector<double> SimManager::getVtxCirculations(size_t vtx) const
 
 std::map<size_t, double> SimManager::computeCompositionAt(double x, double y, size_t step, double radius) const
 {
-	return DataAnalyst::computeCompositionAt(m_data, x, y, step, radius);
+	return m_afterprocessor.computeCompositionAt(x, y, step, radius);
 }
 
 std::vector<double> SimManager::computeVelocityAt(double x, double y, size_t step, bool x_periodic, double x_period) const
 {
-	double u = DataAnalyst::computeUAt(m_data, step, x, y, x_periodic, x_period);
-	double v = DataAnalyst::computeVAt(m_data, step, x, y, x_periodic, x_period);
+	double u = m_afterprocessor.computeUAt(step, x, y, x_periodic, x_period);
+	double v = m_afterprocessor.computeVAt(step, x, y, x_periodic, x_period);
 	std::vector<double> res;
 	res.push_back(u);
 	res.push_back(v);
@@ -215,12 +215,12 @@ std::vector<double> SimManager::computeVelocityAt(double x, double y, size_t ste
 
 double SimManager::computeVorticityAt(double x, double y, size_t step, double h, bool x_periodic, double x_period) const
 {
-	return DataAnalyst::computeVorticityAt(m_data, step, x, y, x_periodic, x_period, h);
+	return m_afterprocessor.computeVorticityAt(step, x, y, x_periodic, x_period, h);
 }
 
 std::vector<double> SimManager::computeHamiltonianEvolution(size_t nb_threads) const
 {
-	return DataAnalyst::computeHamiltonianEvolution(m_data, nb_threads, m_x_periodic, m_x_period);
+	return m_afterprocessor.computeHamiltonianEvolution(nb_threads, m_x_periodic, m_x_period);
 }
 
 void SimManager::saveSim(std::string fileNameWithPath) const
