@@ -4,16 +4,16 @@ Alexandre DUTKA - ISAE-SUPAERO - 05/2020
 ![alt text](logo.png "A quick preview...")
 
 ## Requirements
-###To compile the library :
+### To compile the library :
 - CMake  
 - A C++ compiler  
 - The PyBind11 library  
 
-###To use it with Python :
+### To use it with Python :
 - Python 3+  
-- The NumPy and Matplotlib libraries  
+- The Numpy and Matplotlib libraries  
 
-###To generate the reference documentation :
+### To generate the reference documentation :
 - Doxygen  
 
 ## How to install
