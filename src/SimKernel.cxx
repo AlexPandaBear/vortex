@@ -382,69 +382,67 @@ void SimKernel::computeSVStep(DataManager &dm, size_t step)
 
 	double dt(v_time[step+1] - v_time[step]);
 
-	std::vector<Vortex> workingCopy;
-	for (auto v : v_vtx) {workingCopy.push_back(v);}
+	std::vector<double> U_pt1(m_nb_vtx, 0.), U_pt2(m_nb_vtx, 0.);
 
 	for (size_t i = 0; i < m_nb_vtx; i++)
 	{
-		x = workingCopy[i].getX();
-		y = workingCopy[i].getY();
 		u = 0.;
 
 		for (size_t j = 0; j < m_nb_vtx; j++)
 		{
-			vtx = workingCopy[j];
 			if (j!=i)
 			{
-				u += vtx.computeXInducedVelocityAt(x, y);
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
 			}
 		}
 
-		dm.storeUAt(step, i, u);
+		U_pt1[i] = u;
 	}
 
-	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(0.5*dt*dm.getUAt(step, i), 0.);}
+	for (size_t i = 0; i < m_nb_vtx; i++) {v_vtx[i].move(0.5*dt*U_pt1[i], 0.);}
 
 	for (size_t i = 0; i < m_nb_vtx; i++)
 	{
-		x = workingCopy[i].getX();
-		y = workingCopy[i].getY();
 		v = 0.;
 
 		for (size_t j = 0; j < m_nb_vtx; j++)
 		{
-			vtx = workingCopy[j];
 			if (j!=i)
 			{
-				v += vtx.computeYInducedVelocityAt(x, y);
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
 			}
 		}
 
 		dm.storeVAt(step, i, v);
 	}
 
-	for (size_t i = 0; i < m_nb_vtx; i++) {workingCopy[i].move(0., dt*dm.getVAt(step, i));}
+	for (size_t i = 0; i < m_nb_vtx; i++) {v_vtx[i].move(0., dt*dm.getVAt(step, i));}
 
 	for (size_t i = 0; i < m_nb_vtx; i++)
 	{
-		x = workingCopy[i].getX();
-		y = workingCopy[i].getY();
 		u = 0.;
 
 		for (size_t j = 0; j < m_nb_vtx; j++)
 		{
-			vtx = workingCopy[j];
 			if (j!=i)
 			{
-				u += vtx.computeXInducedVelocityAt(x, y);
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
 			}
 		}
 
-		double u1 = dm.getUAt(step, i);
-		dm.storeUAt(step, i, 0.5*(u + u1));
+		U_pt2[i] = u;
 	}
 
-	integrate(dm, step);
+	for (size_t i = 0; i < m_nb_vtx; i++) {v_vtx[i].move(0.5*dt*U_pt2[i], 0.);}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) //integrate() w/o double call to move()
+	{
+		dm.storeUAt(step, i, 0.5*(U_pt1[i]+U_pt2[i]));
+		dm.storeXAt(step+1, i, v_vtx[i].getX());
+		dm.storeYAt(step+1, i, v_vtx[i].getY());
+		dm.storeCirculationAt(step+1, i, v_vtx[i].getCirculation());
+		dm.storeRegRadiusAt(step+1, i, v_vtx[i].getRegRadius());
+	}
 }
 
 void SimKernel::computeSVIStep(DataManager &dm, size_t step)
