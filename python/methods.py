@@ -20,25 +20,35 @@ Y = [0., 0.]
 C = [1., 1.]
 R = [0.01 for x in X]
 
+x_max = max(X)
+y_max = max(Y)
+
 #Time stepping parameters
 t0 = 0.
 tEnd = 1000.
-nb_steps = 200
+nb_steps = 500
 nb_threads = 4
 
 #Methods to compare
-useEuler = True
-useRK4 = True
+useEuler = False
+useRK4 = False
 useEulerA = True
 useEulerB = True
 useSV = True
 useSVI = True
 
-methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi']
-use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI]
-methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue']
+methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi', 'test']
+use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI, True]
+methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue', 'r']
+nb_methods = len(methods)
 
+#Plotting parameters
 trLen = 20 #Trace length in animation
+
+normalize_H = True
+normalize_T = True
+
+T_period_th = 8 * np.pi**2 # 2 pi R / [Gamma / (2 pi D)] = 8 pi^2 R^2 / Gamma
 
 
 #%% SCRIPT
@@ -52,7 +62,7 @@ print("Starting simulation(s)...")
 SM = []
 H = []
 
-for i in range(len(methods)):
+for i in range(nb_methods):
     if use_methods[i]:
         sm = vtx.SM()
         for j in range(nb_vtx):
@@ -60,19 +70,27 @@ for i in range(len(methods)):
         sm.buildTimeSample(t0, tEnd, nb_steps)
         sm.chooseNumericalMethod(methods[i])
         sm.sim(nb_threads)
+
         T = sm.getTimeList()
+        if normalize_T:
+            T = [t/T_period_th for t in T]
+
         H_tmp = sm.computeHamiltonianEvolution(nb_threads)
+        if normalize_H:
+            H_tmp = [h/H_tmp[0] for h in H_tmp]
+
         SM.append(sm)
         H.append(H_tmp)
         H_tot += H_tmp
+
     else:
         SM.append(False)
         H.append(False)
 
 print("Simulation(s) teminated")
 
-max = max(H_tot)
-min = min(H_tot)
+h_max = max(H_tot)
+h_min = min(H_tot)
 
 print("Plotting...")
 
@@ -85,19 +103,27 @@ Y_th = [np.sin(theta) for theta in np.linspace(0, 2*np.pi, 1000)]
 for t in range(nb_steps+1):
     ax1.cla()
 
-    for i in range(len(methods)):
+    for i in range(nb_methods):
         if use_methods[i]:
             ax1.plot(T,H[i], label=methods[i], color=methods_colors[i])
 
-    ax1.plot([T[t],T[t]], [min,max], color='k', linestyle='--')
+    ax1.plot([T[t],T[t]], [h_min,h_max], color='k', linestyle='--')
 
-    ax1.set_xlabel("time (sec)")
-    ax1.set_ylabel("Hamiltonian")
+    if normalize_T:
+        ax1.set_xlabel(r'Normalized time $t^* = t \; / \; T_{per}$')
+    else:
+        ax1.set_xlabel("time (sec)")
+
+    if normalize_H:
+        ax1.set_ylabel(r'Normalized Hamiltonian $H^* = H \; / \; H_0$')
+    else:
+        ax1.set_ylabel("Hamiltonian")
+
     ax1.set_title("Evolution of the Hamiltonian over the simulation")
     ax1.legend()
     plt.show(block=False)
 
-    for i in range(len(methods)):
+    for i in range(nb_methods):
         if use_methods[i]:
             X.append([SM[i].getVtxXs(j) for j in range(nb_vtx)])
             Y.append([SM[i].getVtxYs(j) for j in range(nb_vtx)])
@@ -112,8 +138,23 @@ for t in range(nb_steps+1):
         a = 0
 
     ax2.cla()
-    #ax2.set_xlim([-2,2])
-    #ax2.set_ylim([-2,2])
+
+    local_x_max = 0
+    local_y_max = 0
+
+    for i in range(nb_vtx):
+        for k in range(len(methods)):
+            if use_methods[k]:
+                local_x_max = max([local_x_max, X[k][i][t]])
+                local_y_max = max([local_y_max, Y[k][i][t]])
+
+    x_max = max([x_max, local_x_max])
+    y_max = max([y_max, local_y_max])
+
+    lim = 1.1 * max([x_max, y_max])
+    ax2.set_xlim([-lim,lim])
+    ax2.set_ylim([-lim,lim])
+
     ax2.grid()
     ax2.set_xlabel("x")
     ax2.set_ylabel("y")
@@ -121,7 +162,7 @@ for t in range(nb_steps+1):
     ax2.plot(X_th, Y_th, color='k', linestyle='--')
 
     for i in range(nb_vtx):
-        for k in range(len(methods)):
+        for k in range(nb_methods):
             if use_methods[k]:
                 ax2.scatter(X[k][i][t], Y[k][i][t], color=methods_colors[k])
                 X_plot = X[k][i][a:b]

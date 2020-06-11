@@ -48,6 +48,8 @@ private:
 	
 	void computeSVIStep(DataManager &dm, size_t step);
 
+	void computeTestStep(DataManager &dm, size_t step);
+
 	void printSimProgression(size_t step) const;
 
 public:
