@@ -1,4 +1,4 @@
-# PIR VORTEX METHOD
+# VORTEX METHOD CODE
 Alexandre DUTKA - ISAE-SUPAERO - 05/2020
 
 ![alt text](logo.png "A quick preview...")
