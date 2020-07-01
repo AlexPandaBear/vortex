@@ -32,10 +32,10 @@ ny = 50 #number of lines for the vtx matrix
 
 t0 = 0.
 tEnd = 20.
-nb_steps = 100
+nb_steps = 1000
 
 #Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4), Asymetrical Euler-A (eulerA), Asymetrical Euler-B (eulerB), Stormer-Verlet (sv) and Stormer-Verlet Inverse (svi)
-temporalIntegrationMethod = "euler"
+temporalIntegrationMethod = "rk4"
 
 periodicity = True #computes mvt considering the periodicity of the flow (4 neighbour cells used)
 
@@ -51,7 +51,7 @@ regRadius = max(dx, dy)
 
 print("Reading instructions")
 
-ignoreNullCircVtx = False
+ignoreNullCircVtx = True
 showRealVtxNumber = True
 
 plotInitialProfiles = True
@@ -60,7 +60,7 @@ showComputationTime = True
 
 saveSim = True
 dataFolder = "../data"
-saveFile = "new_DA_test"
+saveFile = "rk4"
 
 numberOfThreads = 4
 

@@ -572,6 +572,237 @@ void SimKernel::computeTestStep(DataManager &dm, size_t step)
 	}
 }
 
+void SimKernel::computeS3Step(DataManager &dm, size_t step)
+{
+	double u, v;
+	Vortex vtx(0,0,0,0);
+
+	double dt(v_time[step+1] - v_time[step]);
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(dt*dm.getUAt(step,i), 0.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0., -dt*dm.getVAt(step,i)/24.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(-2.*dt*dm.getUAt(step,i)/3., 0.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0., 3.*dt*dm.getVAt(step,i)/4.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(2.*dt*dm.getUAt(step,i)/3., 0.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0., 7.*dt*dm.getVAt(step,i)/24.);
+		dm.storeXAt(step+1, i, v_vtx[i].getX());
+		dm.storeYAt(step+1, i, v_vtx[i].getY());
+		dm.storeCirculationAt(step+1, i, v_vtx[i].getCirculation());
+		dm.storeRegRadiusAt(step+1, i, v_vtx[i].getRegRadius());
+	}
+}
+
+void SimKernel::computeTest2Step(DataManager &dm, size_t step)
+{
+	double u, v;
+	Vortex vtx(0,0,0,0);
+
+	double dt(v_time[step+1] - v_time[step]);
+
+	std::vector<double> U_tmp(m_nb_vtx, 0.), V_tmp(m_nb_vtx, 0.);
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		U_tmp[i] = u;
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0.5*dt*U_tmp[i], 0.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		u = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				u += v_vtx[j].computeXInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeUAt(step, i, u);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(dt * (dm.getUAt(step, i) - 0.5*U_tmp[i]), 0.);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		V_tmp[i] = v;
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0., 0.5*dt*V_tmp[i]);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v = 0.;
+
+		for (size_t j = 0; j < m_nb_vtx; j++)
+		{
+			if (j!=i)
+			{
+				v += v_vtx[j].computeYInducedVelocityAt(v_vtx[i].getX(), v_vtx[i].getY());
+			}
+		}
+
+		dm.storeVAt(step, i, v);
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++)
+	{
+		v_vtx[i].move(0., 0.5*dt * (dm.getVAt(step, i) - V_tmp[i]));
+		dm.storeYAt(step+1, i, v_vtx[i].getY());
+	}
+
+	for (size_t i = 0; i < m_nb_vtx; i++) //integrate() w/o double call to move()
+	{
+		dm.storeXAt(step+1, i, v_vtx[i].getX());
+		dm.storeCirculationAt(step+1, i, v_vtx[i].getCirculation());
+		dm.storeRegRadiusAt(step+1, i, v_vtx[i].getRegRadius());
+		v_vtx[i].move(0., 0.5*dt*dm.getVAt(step, i));
+	}
+}
+
 void SimKernel::printSimProgression(size_t step) const
 {
 	std::cout << "\rComputing step " << step+1 << " out of " << m_nb_steps << " -- " << 100.*(step+1)/m_nb_steps << "% completed     " << std::flush;
@@ -698,6 +929,42 @@ void SimKernel::sim(DataManager &dm, size_t nb_threads)
 		{
 			printSimProgression(t);
 			computeTestStep(dm, t);
+		}
+	}
+
+	else if (m_method == "test2")
+	{
+		double v_start;
+		double dt(v_time[1]-v_time[0]);
+
+		for (size_t i = 0; i < m_nb_vtx; i++) //initialization
+		{
+			v_start = 0.;
+
+			for (size_t j = 0; j < m_nb_vtx; j++)
+			{
+				if (j!=i)
+				{
+					v_start += v_vtx[j].computeYInducedVelocityAt(dm.getXAt(0,i), dm.getYAt(0,i));
+				}
+			}
+
+			v_vtx[i].move(0., 0.5*dt*v_start);
+		}
+
+		for (size_t t = 0; t < m_nb_steps; t++)
+		{
+			printSimProgression(t);
+			computeTest2Step(dm, t);
+		}
+	}
+
+	else if (m_method == "test3")
+	{
+		for (size_t t = 0; t < m_nb_steps; t++)
+		{
+			printSimProgression(t);
+			computeS3Step(dm, t);
 		}
 	}
 

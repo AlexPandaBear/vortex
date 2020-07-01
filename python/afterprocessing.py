@@ -22,7 +22,7 @@ print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (works only if python is used in interactive mode (-i) or in an IDE)
 dataFolder = "../data"
-dataFile = "new_DA_test"
+dataFile = "rk4"
 
 plotVtxAnimation = False
 vtxMvt_reframe = True
@@ -37,7 +37,7 @@ steps_compositionField = [i for i in range(101) if i%10==0]
 compositionRadius = "auto"
 plotCompoAnimation = False
 
-plotVelocityField = True
+plotVelocityField = False
 steps_velocityField = [i for i in range(101) if i%10==0]
 showVelocityVectors = True
 
@@ -53,7 +53,7 @@ steps_streamlines = [i for i in range(101) if i%10==0]
 integrationStep = 0.1
 nb_streamlines = 20
 
-plotHamiltonianEvolution = False
+plotHamiltonianEvolution = True
 
 numberOfThreads = 4
 

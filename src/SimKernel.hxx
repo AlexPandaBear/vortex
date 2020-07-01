@@ -50,6 +50,10 @@ private:
 
 	void computeTestStep(DataManager &dm, size_t step);
 
+	void computeTest2Step(DataManager &dm, size_t step);
+
+	void computeS3Step(DataManager &dm, size_t step);
+
 	void printSimProgression(size_t step) const;
 
 public:

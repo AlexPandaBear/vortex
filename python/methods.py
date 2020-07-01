@@ -25,21 +25,21 @@ y_max = max(Y)
 
 #Time stepping parameters
 t0 = 0.
-tEnd = 1000.
-nb_steps = 500
+tEnd = 5000.
+nb_steps = 4000
 nb_threads = 4
 
 #Methods to compare
-useEuler = False
-useRK4 = False
-useEulerA = True
+useEuler = True
+useRK4 = True
+useEulerA = False
 useEulerB = True
 useSV = True
-useSVI = True
+useSVI = False
 
-methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi', 'test']
-use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI, True]
-methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue', 'r']
+methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi', 'test', 'test2', 'test3']
+use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI, False, False, False]
+methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue', 'r', 'k', 'b']
 nb_methods = len(methods)
 
 #Plotting parameters
