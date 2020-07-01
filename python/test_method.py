@@ -1,7 +1,7 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
-print("--------------------   Method Testing   --------------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
+print("-----------------   Method Accuracy Test   -----------------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -25,7 +25,7 @@ t0 = 0.
 tEnd = 10000.
 nb_steps = [10000, 20000, 40000, 80000, 160000]
 nb_threads = 4
-method = "sv"
+method = "sv
 
 trLen = 20 #Trace length in animation
 

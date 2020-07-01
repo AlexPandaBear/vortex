@@ -1,7 +1,8 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
+print("-------------   KELVIN-HELMHOLTZ INSTABILITY   -------------")
 print("----------------------   Simulation   ----------------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -19,17 +20,18 @@ import time
 
 print("Loading parameters")
 
-width = 15.
-height = 10.
+width = 15. #size (x-axis) of the "main box"
+height = 10. #size (y-axis) of the "main box"
 
 U0 = 1. #initial velocity of the top layer (bottom one's is -U0)
 
-RSLT = 0.2 #relative shear layer thickness
-RIHPA = 0.3 #relative initial harmonic perturbation amplitude
+RSLT = 0.2 #Relative Shear Layer Thickness (normalized by the height parameter)
+RIHPA = 0.02 #Relative Initial Harmonic Perturbation Amplitude (also normalized by height)
 
-nx = 50 #number of columns for the vtx matrix
-ny = 50 #number of lines for the vtx matrix
+nx = 50 #number of columns for the vtx matrix (initialization)
+ny = 50 #number of lines for the vtx matrix (initialization)
 
+#integration parameters
 t0 = 0.
 tEnd = 20.
 nb_steps = 1000
@@ -37,30 +39,31 @@ nb_steps = 1000
 #Numerical methods implemented : Explicit Euler (euler), Runge-Kutta 4 (rk4), Asymetrical Euler-A (eulerA), Asymetrical Euler-B (eulerB), Stormer-Verlet (sv) and Stormer-Verlet Inverse (svi)
 temporalIntegrationMethod = "rk4"
 
-periodicity = True #computes mvt considering the periodicity of the flow (4 neighbour cells used)
+periodicity = True #has to be True to properly compute the Kelvin-Helmholtz instability
 
 dx = width/(nx-1) #horizontal space between two vtx at t0
 dy = height/(ny-1) #vertical space between two vtx at t0
 
-SLT = 0.5*height*RSLT #shear layer thickness
+SLT = 0.5*height*RSLT #Shear Layer Thickness
+IHPA = 0.5*height*RIHPA #Initial Harmonic Perturbation Amplitude
 
-regRadius = max(dx, dy)
+regRadius = max(dx, dy) #Regularization radius of the vortices
 
 
 #%% INSTRUCTIONS
 
 print("Reading instructions")
 
-ignoreNullCircVtx = True
-showRealVtxNumber = True
+ignoreNullCircVtx = True #if True, vortices with null circulation in the initialization matix will be deleted
+showRealVtxNumber = True #if True, prints the number of vortices really used for computation
 
-plotInitialProfiles = True
+plotInitialProfiles = True #if True, plots the velocity and vorticity profiles before stating computation
 
-showComputationTime = True
+showComputationTime = True #if True, prints the computation time
 
-saveSim = True
-dataFolder = "../data"
-saveFile = "rk4"
+saveSim = True #if False, once this script terminates all the simulation will be lost
+dataFolder = "../data" #folder where simulation files will be stored (default is "../data")
+saveFile = "rk4" #name of the simulation files (if it matches an existing file, it will be overwritten)
 
 numberOfThreads = 4
 
@@ -141,7 +144,7 @@ for i in range(nx):
 		x = width * i/(nx)
 		y = height * (0.5 - j/(ny-1))
 		circ = computeVtxCircAt(x, y, SLT)
-		yWithPert = y + RIHPA * np.sin(2*np.pi * x/width) * np.cos(np.pi * y/height)
+		yWithPert = y + IHPA * np.sin(2*np.pi * x/width) * np.cos(np.pi * y/height)
 		fluid = 0
 		if y < 0.:
 			fluid = 1

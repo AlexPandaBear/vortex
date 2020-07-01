@@ -1,7 +1,8 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
-print("-------------------   After-Processing   -------------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
+print("-------------   KELVIN-HELMHOLTZ INSTABILITY   -------------")
+print("--------------------   Postprocessing   --------------------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -21,16 +22,16 @@ import _vortex as vtx
 print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used (works only if python is used in interactive mode (-i) or in an IDE)
-dataFolder = "../data"
-dataFile = "rk4"
+dataFolder = "../data" #folder where the simulation is stored
+dataFile = "rk4" #name of the simulation files
 
-plotVtxAnimation = False
-vtxMvt_reframe = True
-traceLength = 5
+plotVtxAnimation = False #plots a simple animation of the vortices' movement
+vtxMvt_reframe = True #if True, this option applies a periodicity condition accordingly to the simulation's parameters
+traceLength = 5 #length of the trace of each vortex in number of time steps
 
-plotVtxConfig = False
+plotVtxConfig = False #plots the raw state of the vortices
 vtxConfig_reframe = True
-steps_vtxConfig = [35]#[i for i in range(101) if i%10==0]
+steps_vtxConfig = [35] #list of the times steps where the configuration(s) will be plotted
 
 plotCompositionField = False
 steps_compositionField = [i for i in range(101) if i%10==0]
@@ -50,7 +51,7 @@ steps_pressureCoefField = [i for i in range(101) if i%10==0]
 
 plotStreamlines = False
 steps_streamlines = [i for i in range(101) if i%10==0]
-integrationStep = 0.1
+integrationStep = 0.1 #integration step used for the computation of the streamlines
 nb_streamlines = 20
 
 plotHamiltonianEvolution = True

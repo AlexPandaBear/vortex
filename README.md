@@ -42,7 +42,7 @@ user@linux:~/path/to/code$ cd python
 user@linux:~/path/to/code/python$ export PYTHONPATH=$PWD/../build/install/lib/python
 ```
 
-Use this command to execute the python scripts. Eventually insert "-i" after "python" to use the interactive mode after.
+Use this command to execute the python scripts.
 ```console
 user@linux:~/path/to/code/python$ python <script>
 ```

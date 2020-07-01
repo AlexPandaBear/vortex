@@ -1,13 +1,27 @@
+print("------------------------------------------------------------")
+print("-----------------   ELLIPSE PROBLEM CODE   -----------------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
+print("------------------------------------------------------------")
+
 import matplotlib.pyplot as plt
 
+
+#%% PARAMETERS
+
+#initial conditions
 x0 = 1.
 y0 = 0.
 
+#ellipse parameters
 a = 2.
 b = 1.
 
+#integration parameters
 dt = 0.1
 nb_steps = 200
+
+
+#%% SCRIPT
 
 X1 = [x0]
 Y1 = [y0]
@@ -51,3 +65,5 @@ plt.plot(T,H2n, label="Non-separable case")
 plt.xlabel("time")
 plt.ylabel(r"Normalized Hamiltonian $H^* = H \; / \; H_0$")
 plt.show()
+
+print("--------------------------------------------------------END-")

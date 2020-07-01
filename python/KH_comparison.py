@@ -1,7 +1,8 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
-print("-------------   Comparative After-Processing   -------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
+print("-------------   KELVIN-HELMHOLTZ INSTABILITY   -------------")
+print("--------------   Comparative Postprocessing   --------------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -21,18 +22,18 @@ import _vortex as vtx
 print("Reading instructions")
 
 loadNewData = True #if False, previously loaded data will be used
-dataFolder = "../data"
-dataFiles = ["custom_test", "rk4_test"]
+dataFolder = "../data" #folder where the simulation files are stored (default is "../data")
+dataFiles = ["custom_test", "rk4_test"] #names of the different simulation files to postprocess
 simNames = ["Custom", "Runge-Kutta 4"]
 
-compareParameters = True
+compareParameters = True #if True, draws a quick recap of the parameters of each simulation
 
-compareVtxConfigs = False
+compareVtxConfigs = False #if True, draws a comparison of the raw states of the vortices for each simulation
 colors_vtxConfigs = ["dodgerblue", "hotpink"]
 vtxConfigs_reframe = True
 steps_vtxConfigs = [i for i in range(1001) if i%50==0]
 
-compareHamiltonians = True
+compareHamiltonians = True #if True, plots a comparison of the evolution of the Hamiltonian for each simulation
 
 numberOfThreads = 4
 

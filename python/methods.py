@@ -1,7 +1,7 @@
 print("------------------------------------------------------------")
 print("------------------   VORTEX METHOD CODE   ------------------")
 print("--------------------   Method Testing   --------------------")
-print("-------   Alexandre DUTKA - ISAE-SUPAERO - 05/2020   -------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
 print("------------------------------------------------------------")
 
 
@@ -37,9 +37,9 @@ useEulerB = True
 useSV = True
 useSVI = False
 
-methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi', 'test', 'test2', 'test3']
-use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI, False, False, False]
-methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue', 'r', 'k', 'b']
+methods = ['euler', 'rk4', 'eulerA', 'eulerB', 'sv', 'svi']
+use_methods = [useEuler, useRK4, useEulerA, useEulerB, useSV, useSVI]
+methods_colors = ['b', 'r', 'orange', 'g', 'hotpink', 'dodgerblue']
 nb_methods = len(methods)
 
 #Plotting parameters

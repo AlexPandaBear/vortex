@@ -514,7 +514,7 @@ void SimKernel::computeSVIStep(DataManager &dm, size_t step)
 		dm.storeRegRadiusAt(step+1, i, v_vtx[i].getRegRadius());
 	}
 }
-
+/*
 void SimKernel::computeTestStep(DataManager &dm, size_t step)
 {
 	double u, v;
@@ -802,7 +802,7 @@ void SimKernel::computeTest2Step(DataManager &dm, size_t step)
 		v_vtx[i].move(0., 0.5*dt*dm.getVAt(step, i));
 	}
 }
-
+*/
 void SimKernel::printSimProgression(size_t step) const
 {
 	std::cout << "\rComputing step " << step+1 << " out of " << m_nb_steps << " -- " << 100.*(step+1)/m_nb_steps << "% completed     " << std::flush;

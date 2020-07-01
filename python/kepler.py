@@ -1,29 +1,47 @@
+print("------------------------------------------------------------")
+print("----------------   2D KEPLER PROBLEM CODE   ----------------")
+print("-------   Alexandre DUTKA - ISAE-SUPAERO - 06/2020   -------")
+print("------------------------------------------------------------")
+
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+#%% CONSTANTS
+
 G = 6.674e-11
 T_year = 365.25*86400.
-AU = 150000000000.
+AU = 150000000000. #Sun-Earth distance
 
+
+#%% PARAMETERS
+
+#initial conditions - positions
 X0 = [0., AU]
 Y0 = [0., 0.]
 
+#initial conditions - velocities
 U0 = [0., 0.]
 V0 = [0., 30000.]
 
 MASS = [1.989e30, 5.972e24]
 NAME = ['Sun','Earth']
 
+#integration parameters
 t0 = 0.
 tEnd = 3.*T_year
 nb_steps = 300
 
+#methods to compare
 useEuler = True
 useEulerA = True
 useEulerB = True
 useSV = True
 useSVI = False
 useRK4 = True
+
+
+#%% SCRIPT
 
 methods = ["Explicit Euler", "EulerA", "EulerB", "Stormer-Verlet", "Inverse Stormer-Verlet", "Runge-Kutta 4"]
 useMethods = [useEuler, useEulerA, useEulerB, useSV, useSVI, useRK4]
@@ -258,3 +276,5 @@ for t in range(nb_steps+1):
     plt.pause(0.5)
     line.pop(0).remove()
 plt.show()
+
+print("--------------------------------------------------------END-")
